@@ -15,15 +15,16 @@
               const targetFrames = frames.filter((frame) => frame.title.includes("Day"))
               console.log(targetFrames)
               console.log(await miro.board.widgets.get())
-              targetFrames.forEach((frame) => {
-                const totalHourInADay = frame.childrenIds.reduce(async (accum, id) => {
+              for (const frame of targetFrames) {
+                let totalHourInADay = 0
+                for (const id of frame.childrenIds) {
                   const targetSticker = await miro.board.widgets.get({type: "sticker"}).filter((sticker) => sticker.tags.some((tag) => tag.title === "開発時間")).find((sticker) => sticker.id === id)
                   const hour = Number(targetSticker.plainText.replace("h", ""))
-                  return accum + hour
-                })
+                  totalHourInADay += hour
+                }
                 console.log(totalHourInADay)
                 miro.board.widgets.create({type: "sticker", text: `${frame.title}<br>${totalHourInADay}h`})
-              })
+              }
               // console.log(targetChildrenId)
               // const targetStickers =
               // console.log(selectedItems)
