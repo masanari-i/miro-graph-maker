@@ -21,11 +21,12 @@
                 for (const id of frame.childrenIds) {
                   const sticker = await miro.board.widgets.get({type: "sticker"})
                   console.log(sticker)
-                  const filteredSticker = sticker.filter((sticker) => sticker.tags.some((tag) => tag.title === "開発時間"))
+                  const filteredSticker = sticker.filter((sticker) => sticker.tags.some((tag) => tag.title.includes("予定：")))
                   console.log(filteredSticker)
                   const targetSticker = filteredSticker.find((sticker) => sticker.id === id)
                   console.log(targetSticker)
-                  const hour = targetSticker ? Number(targetSticker.plainText.replace("h", "")) : 0
+                  const hour = targetSticker ? Number(targetSticker.tags.find((tag) => tag.title.includes("予定：")).title.split(":")[1].replace("h", "")) : 0
+
                   totalHourInADay += hour
                 }
                 console.log(totalHourInADay)
