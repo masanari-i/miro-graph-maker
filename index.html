@@ -25,7 +25,7 @@
                   console.log(filteredSticker)
                   const targetSticker = filteredSticker.find((sticker) => sticker.id === id)
                   console.log(targetSticker)
-                  const hour = targetSticker ? Number(targetSticker.tags.find((tag) => tag.title.includes("予定：")).title.split(":")[1].replace("h", "")) : 0
+                  const hour = targetSticker ? Number(targetSticker.tags.find((tag) => tag.title.includes("予定：")).title.split("：")[1].replace("h", "")) : 0
 
                   totalHourInADay += hour
                 }
