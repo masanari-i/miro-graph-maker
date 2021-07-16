@@ -18,7 +18,8 @@
               for (const frame of targetFrames) {
                 let totalHourInADay = 0
                 for (const id of frame.childrenIds) {
-                  const targetSticker = await miro.board.widgets.get({type: "sticker"}).filter((sticker) => sticker.tags.some((tag) => tag.title === "開発時間")).find((sticker) => sticker.id === id)
+                  const sticker = await miro.board.widgets.get({type: "sticker"})
+                  const targetSticker = sticker.filter((sticker) => sticker.tags.some((tag) => tag.title === "開発時間")).find((sticker) => sticker.id === id)
                   const hour = Number(targetSticker.plainText.replace("h", ""))
                   totalHourInADay += hour
                 }
