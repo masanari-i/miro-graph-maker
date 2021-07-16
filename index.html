@@ -14,7 +14,7 @@
               console.log(selectedItems)
               const stickers = selectedItems.filter((item) => item.type === "STICKER")
               console.log(stickers)
-              const targetStickers = stickers.filter((item) => item.tags.some((tag) => tag === "開発時間"))
+              const targetStickers = stickers.filter((item) => item.tags.some((tag) => tag.title === "開発時間"))
               console.log(targetStickers)
               const totalHours = targetStickers.reduce((accumulator, currentValue) => {
                 return accumulator + Number(currentValue.text.replace("h", ""))
