@@ -16,6 +16,7 @@
               console.log(targetFrames)
               console.log(await miro.board.widgets.get())
               for (const frame of targetFrames) {
+                console.log(frame.childrenIds)
                 let totalHourInADay = 0
                 for (const id of frame.childrenIds) {
                   const sticker = await miro.board.widgets.get({type: "sticker"})
