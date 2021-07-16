@@ -15,7 +15,7 @@
               const targetFrames = frames.filter((frame) => frame.title.includes("Day"))
               console.log(targetFrames)
               targetFrames.forEach((frame) => {
-                const totalHourInADay = frame.childrenId.reduce((accum, id) => {
+                const totalHourInADay = frame.childrenIds.reduce((accum, id) => {
                   const targetSticker = miro.board.widgets.get({type: "STICKER"}).filter((sticker) => sticker.tags.some((tag) => tag.title === "開発時間")).find((sticker) => sticker.id === id)
                   const hour = Number(targetSticker.plainText.replace("h", ""))
                   return accum + hour
