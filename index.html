@@ -17,7 +17,7 @@
               const targetStickers = stickers.filter((item) => item.tags.some((tag) => tag.title === "開発時間"))
               console.log(targetStickers)
               const totalHours = targetStickers.reduce((accumulator, currentValue) => {
-                return accumulator + Number(currentValue.text.replace("h", ""))
+                return accumulator + Number(currentValue.plainText.replace("h", ""))
               }, 0)
               miro.board.widgets.create({type: "sticker", text: totalHours})
             }
