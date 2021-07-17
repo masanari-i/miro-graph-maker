@@ -10,18 +10,30 @@
       function round(number) {
         return Math.round(number * 10) / 10
       }
+      async function getSprintInformationFrame() {
+        const targetFrame = (await miro.board.widgets.get({type: "FRAME"})).filter(frame => frame.title === "sprint information")
+        if (targetFrame.length === 0) {
+          alert("sprint informationというタイトルがついたフレームが存在しません。")
+          throw new Error("sprint informationというタイトルがついたフレームが存在しません。")
+        } else if (targetFrame.length > 1) {
+          alert("sprint informationというタイトルがついたフレームが複数存在します。")
+          throw new Error("sprint informationというタイトルがついたフレームが複数存在します。")
+        }
+        return targetFrame[0]
+      }
       async function getLatestDay() {
         const stickerIds = (await miro.board.widgets.get({type: "STICKER"})).filter(sticker => sticker.tags.some(tag => tag.title === "finish")).map(sticker => sticker.id)
         if (stickerIds.length === 0) {
           alert("finishのタグがついた付箋が存在しません。")
-          return
+          throw new Error("finishのタグがついた付箋が存在しません。")
         } else if (stickerIds.length > 1) {
           alert("finishのタグがついた付箋が複数存在します。")
-          return
+          throw new Error("finishのタグがついた付箋が複数存在します。")
         }
         const targetFrame = (await miro.board.widgets.get({type: "FRAME"})).find((frame) => compareTwoIdArray(frame.childrenIds, stickerIds))
         if (!targetFrame) {
           alert('finishのタグの付箋が「DayX」のフレームに置かれていません。')
+          throw new Error('finishのタグの付箋が「DayX」のフレームに置かれていません。')
         }
         return targetFrame.title
       }
@@ -41,7 +53,7 @@
             const hour = targetSticker ? Number(targetSticker.tags.find((tag) => tag.title.includes("予定：")).title.split("：")[1].replace("h", "")) : 0
             totalHourInADay += hour
           }
-          miro.board.widgets.create({type: "sticker", text: `${frame.title}<br>タスク消化<br>${round(totalHourInADay)}h`, x: frame.x, y: frame.y})
+          miro.board.widgets.create({type: "sticker", text: `${frame.title}<br>タスク消化<br>${round(totalHourInADay)}h`, x: frame.x, y: frame.y, tags: ["自動生成"]})
           totalHoursList.push({frame, hour: totalHourInADay})
           if (frame.title === latestDay) break
         }
@@ -58,10 +70,10 @@
         const PBIListStickers = (await miro.board.widgets.get({type: "STICKER"})).filter((sticker) => sticker.tags.some((tag) => tag.title === "PBIリスト"))
         if (PBIListStickers.length === 0) {
           alert("PBIリストのタグがついた付箋が存在しません。")
-          return
+          throw new Error("PBIリストのタグがついた付箋が存在しません。")
         } else if (PBIListStickers.length > 1) {
           alert("PBIリストのタグがついた付箋が複数存在します。")
-          return
+          throw new Error("PBIリストのタグがついた付箋が複数存在します。")
         }
         const PBIListSticker = PBIListStickers[0]
         const PBINameList = PBIListSticker.plainText.split(" ")
@@ -75,27 +87,20 @@
           const targetFrame = (await miro.board.widgets.get({type: "FRAME"})).filter(frame => frame.title === PBIName)
           if (targetFrame.length === 0) {
             alert("該当PBIの名前のタイトルがついたフレームが存在しません。PBI名：" + PBIName)
-            return
+            throw new Error("該当PBIの名前のタイトルがついたフレームが存在しません。PBI名：" + PBIName)
           } else if (targetFrame.length > 1) {
             alert("該当PBIの名前のタイトルがついたフレームが複数存在します。PBI名：" + PBIName)
-            return
+            throw new Error("該当PBIの名前のタイトルがついたフレームが複数存在します。PBI名：" + PBIName)
           }
-          await miro.board.widgets.create({type: "STICKER", text: `${PBIName}<br>合計<br>${round(totalHours)}h`, x: targetFrame[0].x, y: targetFrame[0].y})
+          await miro.board.widgets.create({type: "STICKER", text: `${PBIName}<br>合計<br>${round(totalHours)}h`, x: targetFrame[0].x, y: targetFrame[0].y, tags: ["自動生成"]})
           totalHoursList.push({name: PBIName, hour: totalHours})
         }
         return totalHoursList
       }
       async function calculateAllTaskHoursInAllBacklogs(hoursInBacklogs) {
         const totalHours = hoursInBacklogs.reduce((accum, info) => accum + info.hour, 0)
-        const targetFrame = (await miro.board.widgets.get({type: "FRAME"})).filter(frame => frame.title === "sprint information")
-        if (targetFrame.length === 0) {
-          alert("sprint informationというタイトルがついたフレームが存在しません。")
-          return
-        } else if (targetFrame.length > 1) {
-          alert("sprint informationというタイトルがついたフレームが複数存在します。")
-          return
-        }
-        await miro.board.widgets.create({type: "STICKER", text: `合計タスク時間<br>${round(totalHours)}h`, x: targetFrame[0].x, y: targetFrame[0].y})
+        const targetFrame = await getSprintInformationFrame()
+        await miro.board.widgets.create({type: "STICKER", text: `合計タスク時間<br>${round(totalHours)}h`, x: targetFrame.x, y: targetFrame.y, tags: ["自動生成"]})
         return totalHours
       }
       async function getHoursPreparedForDevelopmentInEachDays() {
@@ -126,51 +131,44 @@
         })
         const latestDay = await getLatestDay()
         if (!targetDayFramesInfo.some(frameInfo => frameInfo.frame.title === latestDay)) {
-          alert('finishの付箋が不適切なフレームの上にあります。latestDay:' + latestDay)
-          return
+          alert('finishの付箋が不適切なフレームの上にあります。置かれている場所:' + latestDay)
+          throw new Error('finishの付箋が不適切なフレームの上にあります。置かれている場所:' + latestDay)
         }
         const maxNumber = Number(targetDayFramesInfo.slice(-1)[0].frame.title.replace("Day", ""))
         if (maxNumber !== targetDayFramesInfo.length) {
           alert('DayXフレームの開発時間の付箋に抜けがあります')
-          return
+          throw new Error('DayXフレームの開発時間の付箋に抜けがあります')
         }
         return targetDayFramesInfo
       }
       async function calculateAllDevelopmentHours(dayFramesInfo) {
-        const targetFrame = (await miro.board.widgets.get({type: "FRAME"})).find((frame) => frame.title === "sprint information")
+        const targetFrame = await getSprintInformationFrame()
         const totalHours = dayFramesInfo.reduce((accum, frameInfo) => accum + frameInfo.hour, 0)
-        await miro.board.widgets.create({type: "STICKER", text: `開発時間<br>${totalHours}h`, x: targetFrame.x, y: targetFrame.y})
+        await miro.board.widgets.create({type: "STICKER", text: `開発時間<br>${totalHours}h`, x: targetFrame.x, y: targetFrame.y, tags: ["自動生成"]})
         return totalHours
       }
       async function calculateConsumedBuffaInEachDays(dayDoneTaskHours, dayFramesInfo) {
         let dayBuffaList = []
         for (let i=0; i<dayDoneTaskHours.length; i++) {
           if (dayDoneTaskHours[i].frame.title !== dayFramesInfo[i].frame.title) {
-            alert('dayDoneTaskHoursとDayFramesInfoの順番が異なっています。'+ dayDoneTaskHours[i].frame.title + ' and ' + dayFramesInfo[i].frame.title)
-            return
+            alert('日次タスク消化時間と日次開発時間の順番が異なっています。'+ dayDoneTaskHours[i].frame.title + ' and ' + dayFramesInfo[i].frame.title)
+            throw new Error('日次タスク消化時間と日次開発時間の順番が異なっています。'+ dayDoneTaskHours[i].frame.title + ' and ' + dayFramesInfo[i].frame.title)
           }
           const hour = round(dayFramesInfo[i].hour - dayDoneTaskHours[i].hour)
           dayBuffaList.push({frame: dayDoneTaskHours[i].frame, hour})
-          await miro.board.widgets.create({type: "STICKER", text: `バッファ消化<br>${hour}h`, x: dayDoneTaskHours[i].frame.x, y: dayDoneTaskHours[i].frame.y})
+          await miro.board.widgets.create({type: "STICKER", text: `バッファ消化<br>${hour}h`, x: dayDoneTaskHours[i].frame.x, y: dayDoneTaskHours[i].frame.y, tags: ["自動生成"]})
         }
       }
       async function calculateTotalBuffaHours(totalHoursInBacklogs, totalDevelopHours) {
-        const targetFrame = (await miro.board.widgets.get({type: "FRAME"})).filter((frame) => frame.title === "sprint information")
-        if (targetFrame.length === 0) {
-          alert("sprint informationというタイトルがついたフレームが存在しません。")
-          return
-        } else if (targetFrame.length > 1) {
-          alert("sprint informationというタイトルがついたフレームが複数存在します。")
-          return
-        }
+        const targetFrame = await getSprintInformationFrame()
         const totalBuffa = round(totalDevelopHours - totalHoursInBacklogs)
-        await miro.board.widgets.create({type: "STICKER", text: `バッファ<br>合計時間<br>${totalBuffa}h`, x: targetFrame[0].x, y: targetFrame[0].y})
+        await miro.board.widgets.create({type: "STICKER", text: `バッファ<br>合計時間<br>${totalBuffa}h`, x: targetFrame.x, y: targetFrame.y, tags: ["自動生成"]})
         return totalBuffa
       }
       miro.initialize({
         extensionPoints: {
           bottomBar: {
-            title: 'Graph Maker',
+            title: 'Graph maker',
             svgIcon: '<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><g><rect fill="none" height="24" width="24"/></g><g><g><path d="M21,8c-1.45,0-2.26,1.44-1.93,2.51l-3.55,3.56c-0.3-0.09-0.74-0.09-1.04,0l-2.55-2.55C12.27,10.45,11.46,9,10,9 c-1.45,0-2.27,1.44-1.93,2.52l-4.56,4.55C2.44,15.74,1,16.55,1,18c0,1.1,0.9,2,2,2c1.45,0,2.26-1.44,1.93-2.51l4.55-4.56 c0.3,0.09,0.74,0.09,1.04,0l2.55,2.55C12.73,16.55,13.54,18,15,18c1.45,0,2.27-1.44,1.93-2.52l3.56-3.55 C21.56,12.26,23,11.45,23,10C23,8.9,22.1,8,21,8z"/><polygon points="15,9 15.94,6.93 18,6 15.94,5.07 15,3 14.08,5.07 12,6 14.08,6.93"/><polygon points="3.5,11 4,9 6,8.5 4,8 3.5,6 3,8 1,8.5 3,9"/></g></g></svg>',
             onClick: async () => {
               console.log("====以下、PBI毎の合計時間の演算====")
