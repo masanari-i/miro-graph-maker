@@ -79,7 +79,7 @@
           alert("sprint informationというタイトルがついたフレームが複数存在します。")
           return
         }
-        await miro.board.widgets.create({type: "STICKER", text: `合計タスク時間<br>${round(totalHours)}h`})
+        await miro.board.widgets.create({type: "STICKER", text: `合計タスク時間<br>${round(totalHours)}h`, x: targetFrame.x, y: targetFrame.y})
       }
       async function getHoursPreparedForDevelopmentInEachDay() {
         const dayFrames = (await miro.board.widgets.get({type: "FRAME"})).filter(frame => frame.title.includes("Day"))
@@ -88,7 +88,7 @@
           let hour
           let haveTargetTag = false
           for (const id of frame.childrenIds) {
-            const targetSticker = await miro.board.widgets.get({id})
+            const targetSticker = (await miro.board.widgets.get({type: "STICKER"})).find(sticker => sticker.id === id)
             haveTargetTag = targetSticker.tags.includes("開発時間")
             if (haveTargetTag) {
               hour = Number(targetSticker.plaintext.replace("h", ""))
