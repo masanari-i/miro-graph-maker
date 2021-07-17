@@ -49,8 +49,15 @@
           }, 0)
           console.log(totalHours)
           const targetFrame = (await miro.board.widgets.get({type: "FRAME"})).filter(frame => frame.title === PBIName)
+          if (targetFrame.length === 0) {
+            alert("該当PBIの名前のタグがついたフレームが存在しません。PBI名：" + PBIName)
+            return
+          } else if (targetFrame.length > 1) {
+            alert("該当PBIの名前のタグがついたフレームが複数存在します。PBI名：" + PBIName)
+            return
+          }
           console.log(targetFrame)
-          await miro.board.widgets.create({type: "STICKER", text: `${totalHours}h`, x: targetFrame.x, y: targetFrame.y})
+          await miro.board.widgets.create({type: "STICKER", text: `${totalHours}h`, x: targetFrame[0].x, y: targetFrame[0].y})
         }
       }
       miro.initialize({
