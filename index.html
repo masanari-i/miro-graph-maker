@@ -92,7 +92,7 @@
           for (const id of frame.childrenIds) {
             const targetSticker = stickers.find(sticker => sticker.id === id)
             console.log(targetSticker)
-            if (targetSticker) haveTargetTag = targetSticker.tags.includes("開発時間")
+            if (targetSticker) haveTargetTag = targetSticker.tags.some(tag => tag.title === "開発時間")
             if (haveTargetTag) {
               hour = Number(targetSticker.plaintext.replace("h", ""))
               break
