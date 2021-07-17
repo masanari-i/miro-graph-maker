@@ -29,7 +29,7 @@
         }
       }
       async function calculateAllTaskHoursInABacklog() {
-        const PBIListStickers = await miro.board.widgets.get({type: "STICKER"}).filter((sticker) => sticker.tags.some((tag) => tag.title === "PBIリスト"))
+        const PBIListStickers = (await miro.board.widgets.get({type: "STICKER"})).filter((sticker) => sticker.tags.some((tag) => tag.title === "PBIリスト"))
         if (PBIListStickers.length === 0) {
           alert("PBIリストのタグがついた付箋が存在しません。")
           return
