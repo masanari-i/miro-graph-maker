@@ -19,7 +19,7 @@
         }
         const createdSticker = await miro.board.widgets.create({type: "STICKER", text, x: frame.x, y: frame.y})
         console.log(createdSticker)
-        await miro.board.tags.update({id: autoMakingTag[0].id, widgetIds: createdSticker[0].id})
+        await miro.board.tags.update({id: autoMakingTag[0].id, widgetIds: [{id: createdSticker[0].id}]})
       }
       async function getSprintInformationFrame() {
         const targetFrame = (await miro.board.widgets.get({type: "FRAME"})).filter(frame => frame.title === "sprint information")
