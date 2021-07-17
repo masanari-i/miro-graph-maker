@@ -12,7 +12,17 @@
       }
       async function getLatestDay() {
         const stickerIds = (await miro.board.widgets.get({type: "STICKER"})).filter(sticker => sticker.tags.some(tag => tag.title === "finish")).map(sticker => sticker.id)
+        if (stickerIds.length === 0) {
+          alert("finishのタグがついた付箋が存在しません。")
+          return
+        } else if (stickerIds.length > 1) {
+          alert("finishのタグがついた付箋が複数存在します。")
+          return
+        }
         const targetFrame = (await miro.board.widgets.get({type: "FRAME"})).find((frame) => compareTwoIdArray(frame.childrenIds, stickerIds))
+        if (!targetFrame) {
+          alert('finishのタグの付箋が「DayX」のフレームに置かれていません。')
+        }
         return targetFrame.title
       }
       async function calculateDoneTaskHoursInADay() {
@@ -20,6 +30,7 @@
         const stickers = await miro.board.widgets.get({type: "STICKER"})
         const targetFrames = frames.filter((frame) => frame.title.includes("Day"))
         let totalHoursList = []
+        const latestDay = await getLatestDay()
         for (const frame of targetFrames) {
           let totalHourInADay = 0
           const developHoursStickerIds = stickers.filter(sticker => sticker.tags.some(tag => tag.title === "開発時間")).map(sticker => sticker.id)
@@ -32,7 +43,6 @@
           }
           miro.board.widgets.create({type: "sticker", text: `${frame.title}<br>タスク消化<br>${round(totalHourInADay)}h`, x: frame.x, y: frame.y})
           totalHoursList.push({frame, hour: totalHourInADay})
-          const latestDay = await getLatestDay()
           if (frame.title === latestDay) break
         }
         totalHoursList.sort((aFrame, bFrame) => {
@@ -114,6 +124,11 @@
           if (bNumber < aNumber) return 1
           return -1
         })
+        const latestDay = await getLatestDay()
+        if (!targetDayFramesInfo.some(frameInfo => frameInfo.frame.title === latestDay)) {
+          alert('finishの付箋が不適切なフレームの上にあります。latestDay:' + latestDay)
+          return
+        }
         const maxNumber = Number(targetDayFramesInfo.slice(-1)[0].frame.title.replace("Day", ""))
         if (maxNumber !== targetDayFramesInfo.length) {
           alert('DayXフレームの開発時間の付箋に抜けがあります')
