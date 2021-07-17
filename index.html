@@ -79,6 +79,7 @@
           return
         }
         await miro.board.widgets.create({type: "STICKER", text: `合計タスク時間<br>${round(totalHours)}h`, x: targetFrame[0].x, y: targetFrame[0].y})
+        return totalHours
       }
       async function getHoursPreparedForDevelopmentInEachDays() {
         const dayFrames = (await miro.board.widgets.get({type: "FRAME"})).filter(frame => frame.title.includes("Day"))
@@ -117,6 +118,7 @@
         const targetFrame = (await miro.board.widgets.get({type: "FRAME"})).find((frame) => frame.title === "sprint information")
         const totalHours = dayFramesInfo.reduce((accum, frameInfo) => accum + frameInfo.hour, 0)
         await miro.board.widgets.create({type: "STICKER", text: `開発時間<br>${totalHours}h`, x: targetFrame.x, y: targetFrame.y})
+        return totalHours
       }
       async function calculateConsumedBuffaInEachDays(dayDoneTaskHours, dayFramesInfo) {
         if (dayDoneTaskHours.length !== dayFramesInfo.length) {
@@ -135,6 +137,19 @@
         }
         return dayBuffaList
       }
+      async function calculateTotalBuffaHours(totalHoursInBacklogs, totalDevelopHours) {
+        const targetFrame = (await miro.board.widgets.get({type: "FRAME"})).filter((frame) => frame.title === "sprint information")
+        if (targetFrame.length === 0) {
+          alert("sprint informationというタイトルがついたフレームが存在しません。")
+          return
+        } else if (targetFrame.length > 1) {
+          alert("sprint informationというタイトルがついたフレームが複数存在します。")
+          return
+        }
+        const totalBuffa = round(totalDevelopHours - totalHoursInBacklogs)
+        await miro.board.widgets.create({type: "STICKER", text: `バッファ<br>合計時間<br>${totalBuffa}h`, x: targetFrame[0].x, y: targetFrame[0].y})
+        return totalBuffa
+      }
       miro.initialize({
         extensionPoints: {
           bottomBar: {
@@ -144,7 +159,7 @@
               console.log("====以下、PBI毎の合計時間の演算====")
               const hoursInBacklogs = await calculateAllTaskHoursInABacklog()
               console.log("====以下、全PBIの合計時間の演算====")
-              await calculateAllTaskHoursInAllBacklogs(hoursInBacklogs)
+              const totalHoursInBacklogs = await calculateAllTaskHoursInAllBacklogs(hoursInBacklogs)
               console.log("====以下、1日で消化したタスク時間の演算====")
               const dayDoneTaskHours = await calculateDoneTaskHoursInADay()
               console.log("====以下、1日で確保できる開発時間の取得====")
@@ -154,7 +169,9 @@
               console.log("====以下、1日で消費したバッファの演算====")
               const dayConsumedBuffa = await calculateConsumedBuffaInEachDays(dayDoneTaskHours, dayFramesInfo)
               console.log("====以下、全日で確保できる開発時間の演算====")
-              await calculateAllDevelopmentHours(dayFramesInfo)
+              const totalDevelopHours = await calculateAllDevelopmentHours(dayFramesInfo)
+              console.log("====以下、全日のバッファの合計の演算====")
+              const totalBuffaHours = await calculateTotalBuffaHours(totalHoursInBacklogs, totalDevelopHours)
             }
           }
         }
