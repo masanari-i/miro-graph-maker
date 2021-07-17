@@ -12,8 +12,7 @@
       }
       async function getTextWidget(text) {
         const textWidgets = await miro.board.widgets.get({type: "TEXT"})
-        console.log(textWidgets)
-        const targetTexts = textWidgets.filter(text => text.plainText === text)
+        const targetTexts = textWidgets.filter(textWidget => textWidget.plainText === text)
         if (targetTexts.length === 0) {
           alert("「"+text+"」というテキストは存在しません。")
           throw new Error("「"+text+"」というテキストは存在しません。")
