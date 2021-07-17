@@ -4,6 +4,9 @@
   <script src="https://miro.com/app/static/sdk.1.1.js"></script>
   <script>
     miro.onReady(() => {
+      function round(number) {
+        return Math.round(number * 10) / 10
+      }
       async function calculateDoneTaskHourInADay() {
         const frames = await miro.board.widgets.get({type: 'FRAME'})
         console.log(frames)
@@ -25,7 +28,7 @@
             totalHourInADay += hour
           }
           console.log(totalHourInADay)
-          miro.board.widgets.create({type: "sticker", text: `${frame.title}<br>${totalHourInADay}h`, x: frame.x, y: frame.y})
+          miro.board.widgets.create({type: "sticker", text: `${frame.title}<br>${round(totalHourInADay)}h`, x: frame.x, y: frame.y})
         }
       }
       async function calculateAllTaskHoursInABacklog() {
@@ -57,7 +60,7 @@
             return
           }
           console.log(targetFrame)
-          await miro.board.widgets.create({type: "STICKER", text: `${totalHours}h`, x: targetFrame[0].x, y: targetFrame[0].y})
+          await miro.board.widgets.create({type: "STICKER", text: `${round(totalHours)}h`, x: targetFrame[0].x, y: targetFrame[0].y})
         }
       }
       miro.initialize({
