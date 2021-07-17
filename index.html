@@ -39,6 +39,7 @@
         }
         const PBIListSticker = PBIListStickers[0]
         const PBINameList = PBIListSticker.plainText.split(" ")
+        console.log(PBINameList)
         for (const PBIName of PBINameList) {
           const stickers = await miro.board.widgets.get({type: "STICKER"})
           const targetTaskStickers = stickers.filter((sticker) => sticker.tags.some(tag => tag.title === PBIName) || sticker.tags.some(tag => tag.title.includes("予定：")))
