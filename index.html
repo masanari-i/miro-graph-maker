@@ -4,34 +4,64 @@
   <script src="https://miro.com/app/static/sdk.1.1.js"></script>
   <script>
     miro.onReady(() => {
+      async function calculateDoneTaskHourInADay() {
+        const frames = await miro.board.widgets.get({type: 'FRAME'})
+        console.log(frames)
+        const targetFrames = frames.filter((frame) => frame.title.includes("Day"))
+        console.log(targetFrames)
+        console.log(await miro.board.widgets.get())
+        for (const frame of targetFrames) {
+          console.log(frame.childrenIds)
+          let totalHourInADay = 0
+          for (const id of frame.childrenIds) {
+            const sticker = await miro.board.widgets.get({type: "sticker"})
+            console.log(sticker)
+            const filteredSticker = sticker.filter((sticker) => sticker.tags.some((tag) => tag.title.includes("予定：")))
+            console.log(filteredSticker)
+            const targetSticker = filteredSticker.find((sticker) => sticker.id === id)
+            console.log(targetSticker)
+            const hour = targetSticker ? Number(targetSticker.tags.find((tag) => tag.title.includes("予定：")).title.split("：")[1].replace("h", "")) : 0
+
+            totalHourInADay += hour
+          }
+          console.log(totalHourInADay)
+          miro.board.widgets.create({type: "sticker", text: `${frame.title}<br>${totalHourInADay}h`, x: frame.x, y: frame.y})
+        }
+      }
+      async function calculateAllTaskHoursInABacklog() {
+        const PBIListStickers = await miro.board.widgets.get({type: "STICKER"}).filter((sticker) => sticker.tags.some((tag) => tag.title === "PBIリスト"))
+        if (PBIListStickers.length === 0) {
+          alert("PBIリストのタグがついた付箋が存在しません。")
+          return
+        } else if (PBIListStickers.length > 1) {
+          alert("PBIリストのタグがついた付箋が複数存在します。")
+          return
+        }
+        const PBIListSticker = PBIListStickers[0]
+        const PBINameList = PBIListSticker.plainText.split(" ")
+        for (const PBIName of PBINameList) {
+          const stickers = await miro.board.wiedgets.get({type: "STICKER"})
+          const targetTaskStickers = stickers.filter((sticker) => sticker.tags.some(tag => tag.title === PBIName) || sticker.tags.some(tag => tag.title.includes("予定：")))
+          console.log(targetTaskStickers)
+          const totalHours = targetTaskStickers.reduce((accum, sticker) => {
+            return accum + Number(sticker.tags.find(tag => tag.title.includes("予定：")).title.split("：")[1].replace("h", ""))
+          }, 0)
+          console.log(totalHours)
+          const targetFrame = (await miro.board.widgets.get({type: "FRAME"})).filter(frame => frame.title === PBIName)
+          console.log(targetFrame)
+          await miro.board.widgets.create({type: "STICKER", text: `${totalHours}h`, x: targetFrame.x, y: targetFrame.y})
+        }
+      }
       miro.initialize({
         extensionPoints: {
           bottomBar: {
             title: 'Graph Maker',
             svgIcon: '<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><g><rect fill="none" height="24" width="24"/></g><g><g><path d="M21,8c-1.45,0-2.26,1.44-1.93,2.51l-3.55,3.56c-0.3-0.09-0.74-0.09-1.04,0l-2.55-2.55C12.27,10.45,11.46,9,10,9 c-1.45,0-2.27,1.44-1.93,2.52l-4.56,4.55C2.44,15.74,1,16.55,1,18c0,1.1,0.9,2,2,2c1.45,0,2.26-1.44,1.93-2.51l4.55-4.56 c0.3,0.09,0.74,0.09,1.04,0l2.55,2.55C12.73,16.55,13.54,18,15,18c1.45,0,2.27-1.44,1.93-2.52l3.56-3.55 C21.56,12.26,23,11.45,23,10C23,8.9,22.1,8,21,8z"/><polygon points="15,9 15.94,6.93 18,6 15.94,5.07 15,3 14.08,5.07 12,6 14.08,6.93"/><polygon points="3.5,11 4,9 6,8.5 4,8 3.5,6 3,8 1,8.5 3,9"/></g></g></svg>',
             onClick: async () => {
-              const frames = await miro.board.widgets.get({type: 'FRAME'})
-              console.log(frames)
-              const targetFrames = frames.filter((frame) => frame.title.includes("Day"))
-              console.log(targetFrames)
-              console.log(await miro.board.widgets.get())
-              for (const frame of targetFrames) {
-                console.log(frame.childrenIds)
-                let totalHourInADay = 0
-                for (const id of frame.childrenIds) {
-                  const sticker = await miro.board.widgets.get({type: "sticker"})
-                  console.log(sticker)
-                  const filteredSticker = sticker.filter((sticker) => sticker.tags.some((tag) => tag.title.includes("予定：")))
-                  console.log(filteredSticker)
-                  const targetSticker = filteredSticker.find((sticker) => sticker.id === id)
-                  console.log(targetSticker)
-                  const hour = targetSticker ? Number(targetSticker.tags.find((tag) => tag.title.includes("予定：")).title.split("：")[1].replace("h", "")) : 0
-
-                  totalHourInADay += hour
-                }
-                console.log(totalHourInADay)
-                miro.board.widgets.create({type: "sticker", text: `${frame.title}<br>${totalHourInADay}h`, x: frame.x, y: frame.y})
-              }
+              console.log("====以下、PBI毎の合計時間の演算====")
+              await calculateAllTaskHoursInABacklog()
+              console.log("====以下、1日で消化したタスク時間の演算====")
+              await calculateDoneTaskHourInADay()
               // console.log(targetChildrenId)
               // const targetStickers =
               // console.log(selectedItems)
