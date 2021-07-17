@@ -149,6 +149,8 @@
               const dayDoneTaskHours = await calculateDoneTaskHoursInADay()
               console.log("====以下、1日で確保できる開発時間の取得====")
               const dayFramesInfo = await getHoursPreparedForDevelopmentInEachDays()
+              console.log(dayDoneTaskHours)
+              console.log(dayFramesInfo)
               console.log("====以下、1日で消費したバッファの演算====")
               const dayConsumedBuffa = await calculateConsumedBuffaInEachDays(dayDoneTaskHours, dayFramesInfo)
               console.log("====以下、全日で確保できる開発時間の演算====")
