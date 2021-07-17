@@ -119,7 +119,7 @@
       async function calculateAllDevelopmentHours(dayFramesInfo) {
         const targetFrame = (await miro.board.widgets.get({type: "FRAME"})).find((frame) => frame.title === "sprint information")
         const totalHours = dayFramesInfo.reduce((accum, frameInfo) => accum + frameInfo.hour, 0)
-        miro.board.widgets.create({type: "STICKER", text: `開発時間<br>${totalHours}h`, x: targetFrame.x, y: targetFrame.y})
+        await miro.board.widgets.create({type: "STICKER", text: `開発時間<br>${totalHours}h`, x: targetFrame.x, y: targetFrame.y})
       }
       miro.initialize({
         extensionPoints: {
