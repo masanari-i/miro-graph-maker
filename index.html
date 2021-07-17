@@ -83,16 +83,16 @@
       }
       async function getHoursPreparedForDevelopmentInEachDay() {
         const dayFrames = (await miro.board.widgets.get({type: "FRAME"})).filter(frame => frame.title.includes("Day"))
+        const stickers  = await miro.board.widgets.get({type: "STICKER"})
         let targetDayFramesInfo = []
         for (const frame of dayFrames) {
           let hour
           let haveTargetTag = false
           console.log(frame)
           for (const id of frame.childrenIds) {
-            const targetSticker = (await miro.board.widgets.get({type: "STICKER"})).find(sticker => sticker.id === id)
-            if (!targetSticker) break
+            const targetSticker = stickers.find(sticker => sticker.id === id)
             console.log(targetSticker)
-            haveTargetTag = targetSticker.tags.includes("開発時間")
+            haveTargetTag = targetSticker?.tags.includes("開発時間")
             if (haveTargetTag) {
               hour = Number(targetSticker.plaintext.replace("h", ""))
               break
