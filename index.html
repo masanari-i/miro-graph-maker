@@ -40,7 +40,7 @@
           if (bNumber < aNumber) return 1
           return -1
         })
-        const latestDay = getLatestDay()
+        const latestDay = await getLatestDay()
         const latestIndex = totalHoursList.findIndex((item) => item.frame.title === latestDay)
         console.log(latestDay)
         console.log(latestIndex)
@@ -145,7 +145,7 @@
           dayBuffaList.push({frame: dayDoneTaskHours[i].frame, hour})
           await miro.board.widgets.create({type: "STICKER", text: `バッファ消化<br>${hour}h`, x: dayDoneTaskHours[i].frame.x, y: dayDoneTaskHours[i].frame.y})
         }
-        const latestDay = getLatestDay()
+        const latestDay = await getLatestDay()
         const latestIndex = dayBuffaList.findIndex((item) => item.frame.title === latestDay)
         console.log(latestDay)
         console.log(latestIndex)
