@@ -11,7 +11,7 @@
         return Math.round(number * 10) / 10
       }
       async function createSticker(text, frame) {
-        const autoMakingTag = miro.board.tags.get({title: "自動生成"})
+        const autoMakingTag = await miro.board.tags.get({title: "自動生成"})
         console.log(autoMakingTag)
         if (autoMakingTag.length === 0) {
           alert("「自動生成」というタグがこのボードにありません。作ってください。")
