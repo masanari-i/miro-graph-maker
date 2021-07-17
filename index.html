@@ -25,7 +25,7 @@
           throw new Error("「自動生成」というタグがこのボードにありません。作ってください。")
         }
         const childrenIds = frame.childrenIds
-        const targetTexts = await getTextWidget(word).filter(textWidget => childrenIds.includes(textWidget.id))
+        const targetTexts = (await getTextWidget(word)).filter(textWidget => childrenIds.includes(textWidget.id))
         if (targetTexts.length === 0) {
           alert("フレーム「"+frame.title+"」上に「"+word+"」というテキストが存在しません。")
           throw new Error("フレーム「"+frame.title+"」上に「"+word+"」というテキストが存在しません。")
