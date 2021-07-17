@@ -17,7 +17,7 @@
           alert("「自動生成」というタグがこのボードにありません。作ってください。")
           throw new Error("「自動生成」というタグがこのボードにありません。作ってください。")
         }
-        await miro.board.widgets.create({type: "STICKER", text, x: frame.x, y: frame.y, tags:[{id:autoMakingTag[0].id}]})
+        await miro.board.widgets.create({type: "STICKER", text, x: frame.x, y: frame.y, tags:[autoMakingTag[0].id]})
       }
       async function getSprintInformationFrame() {
         const targetFrame = (await miro.board.widgets.get({type: "FRAME"})).filter(frame => frame.title === "sprint information")
