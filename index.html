@@ -42,7 +42,7 @@
         console.log(PBINameList)
         for (const PBIName of PBINameList) {
           const stickers = await miro.board.widgets.get({type: "STICKER"})
-          const targetTaskStickers = stickers.filter((sticker) => sticker.tags.some(tag => tag.title === PBIName) || sticker.tags.some(tag => tag.title.includes("予定：")))
+          const targetTaskStickers = stickers.filter((sticker) => sticker.tags.some(tag => tag.title === PBIName) && sticker.tags.some(tag => tag.title.includes("予定：")))
           console.log(targetTaskStickers)
           const totalHours = targetTaskStickers.reduce((accum, sticker) => {
             return accum + Number(sticker.tags.find(tag => tag.title.includes("予定：")).title.split("：")[1].replace("h", ""))
