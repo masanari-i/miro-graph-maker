@@ -65,12 +65,12 @@
           }
           console.log(targetFrame)
           await miro.board.widgets.create({type: "STICKER", text: `${PBIName}<br>合計<br>${round(totalHours)}h`, x: targetFrame[0].x, y: targetFrame[0].y})
-          totalHoursList.push({name: PBIName, hours: totalHours})
+          totalHoursList.push({name: PBIName, hour: totalHours})
         }
         return totalHoursList
       }
       async function calculateAllTaskHoursInAllBacklogs(hoursInBacklogs) {
-        const totalHours = hoursInBacklogs.reduce((accum, hour) => accum + hour, 0)
+        const totalHours = hoursInBacklogs.reduce((accum, info) => accum + info.hour, 0)
         const targetFrame = (await miro.board.widgets.get({type: "FRAME"})).filter(frame => frame.title === "sprint information")
         if (targetFrame.length === 0) {
           alert("sprint informationというタイトルがついたフレームが存在しません。")
