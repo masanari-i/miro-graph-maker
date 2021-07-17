@@ -19,8 +19,9 @@
         }
         console.log(frame.title)
         console.log(frame.bounds)
-        const createdSticker = await miro.board.widgets.create({type: "STICKER", text, bounds: {top: frame.bounds.top, left: frame.bounds.left}})
+        const createdSticker = await miro.board.widgets.create({type: "STICKER", text})
         console.log(createdSticker)
+        await miro.board.widgets.update({id: createdSticker[0].id, bounds: {top: frame.bounds.top, left: frame.bounds.left}})
         autoMakingTag[0].widgetIds.push(createdSticker[0].id)
         await miro.board.tags.update({id: autoMakingTag[0].id, widgetIds: autoMakingTag[0].widgetIds})
       }
