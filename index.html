@@ -90,6 +90,7 @@
           console.log(frame)
           for (const id of frame.childrenIds) {
             const targetSticker = (await miro.board.widgets.get({type: "STICKER"})).find(sticker => sticker.id === id)
+            console.log(targetSticker)
             haveTargetTag = targetSticker.tags.includes("開発時間")
             if (haveTargetTag) {
               hour = Number(targetSticker.plaintext.replace("h", ""))
