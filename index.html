@@ -18,6 +18,7 @@
           throw new Error("「自動生成」というタグがこのボードにありません。作ってください。")
         }
         const createdSticker = await miro.board.widgets.create({type: "STICKER", text, x: frame.x, y: frame.y})
+        console.log(createdSticker)
         await miro.board.tags.update({id: autoMakingTag[0].id, widgetIds: createdSticker.id})
       }
       async function getSprintInformationFrame() {
