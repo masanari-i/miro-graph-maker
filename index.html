@@ -10,11 +10,16 @@
       function round(number) {
         return Math.round(number * 10) / 10
       }
+      async function getLatestDay() {
+        const stickerIds = (await miro.board.widgets.get({type: "STICKER"})).filter(sticker => sticker.tags.some(tag => tag.title === "finish")).map(sticker => sticker.id)
+        const targetFrame = (await miro.board.widgets.get({type: "FRAME"})).find((frame) => compareTwoIdArray(frame.childrenIds, stickerIds))
+        return targetFrame.title
+      }
       async function calculateDoneTaskHoursInADay() {
         const frames = await miro.board.widgets.get({type: 'FRAME'})
         const stickers = await miro.board.widgets.get({type: "STICKER"})
         const targetFrames = frames.filter((frame) => frame.title.includes("Day"))
-        const totalHoursList = []
+        let totalHoursList = []
         for (const frame of targetFrames) {
           let totalHourInADay = 0
           const developHoursStickerIds = stickers.filter(sticker => sticker.tags.some(tag => tag.title === "開発時間")).map(sticker => sticker.id)
@@ -35,6 +40,9 @@
           if (bNumber < aNumber) return 1
           return -1
         })
+        const latestDay = getLatestDay()
+        const latestIndex = totalHoursList.findIndex((item) => item.frame.title === latestDay)
+        totalHoursList = totalHoursList.slice(0, latestIndex+1)
         return totalHoursList
       }
       async function calculateAllTaskHoursInABacklog() {
@@ -135,6 +143,9 @@
           dayBuffaList.push({frame: dayDoneTaskHours[i].frame, hour})
           await miro.board.widgets.create({type: "STICKER", text: `バッファ消化<br>${hour}h`, x: dayDoneTaskHours[i].frame.x, y: dayDoneTaskHours[i].frame.y})
         }
+        const latestDay = getLatestDay()
+        const latestIndex = dayBuffaList.findIndex((item) => item.frame.title === latestDay)
+        dayBuffaList = dayBuffaList.slice(0, latestIndex+1)
         return dayBuffaList
       }
       async function calculateTotalBuffaHours(totalHoursInBacklogs, totalDevelopHours) {
@@ -164,8 +175,6 @@
               const dayDoneTaskHours = await calculateDoneTaskHoursInADay()
               console.log("====以下、1日で確保できる開発時間の取得====")
               const dayFramesInfo = await getHoursPreparedForDevelopmentInEachDays()
-              console.log(dayDoneTaskHours)
-              console.log(dayFramesInfo)
               console.log("====以下、1日で消費したバッファの演算====")
               const dayConsumedBuffa = await calculateConsumedBuffaInEachDays(dayDoneTaskHours, dayFramesInfo)
               console.log("====以下、全日で確保できる開発時間の演算====")
