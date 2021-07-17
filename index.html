@@ -4,11 +4,15 @@
   <script src="https://miro.com/app/static/sdk.1.1.js"></script>
   <script>
     miro.onReady(() => {
+      function compareTwoIdArray(idArray1, idArray2) {
+        return idArray1.some(id => idArray2.includes(id))
+      }
       function round(number) {
         return Math.round(number * 10) / 10
       }
       async function calculateDoneTaskHoursInADay() {
         const frames = await miro.board.widgets.get({type: 'FRAME'})
+        const stickers = await miro.board.widgets.get({type: "STICKER"})
         console.log(frames)
         const targetFrames = frames.filter((frame) => frame.title.includes("Day"))
         console.log(targetFrames)
@@ -17,10 +21,10 @@
         for (const frame of targetFrames) {
           console.log(frame.childrenIds)
           let totalHourInADay = 0
+          const developHoursStickerIds = stickers.filter(sticker => sticker.tags.some(tag => tag.title === "開発時間")).map(sticker => sticker.id)
+          if (!compareTwoIdArray(frame.childrenIds, developHoursStickerIds)) return
           for (const id of frame.childrenIds) {
-            const sticker = await miro.board.widgets.get({type: "sticker"})
-            console.log(sticker)
-            const filteredSticker = sticker.filter((sticker) => sticker.tags.some((tag) => tag.title.includes("予定：")))
+            const filteredSticker = stickers.filter((sticker) => sticker.tags.some((tag) => tag.title.includes("予定：")))
             console.log(filteredSticker)
             const targetSticker = filteredSticker.find((sticker) => sticker.id === id)
             console.log(targetSticker)
