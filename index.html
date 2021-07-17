@@ -11,7 +11,9 @@
         return Math.round(number * 10) / 10
       }
       async function getTextWidget(text) {
-        const targetTexts = (await miro.board.widgets.get({type: "TEXT"})).filter(text => text.text === text)
+        const textWidgets = await miro.board.widgets.get({type: "TEXT"})
+        console.log(textWidgets)
+        const targetTexts = textWidgets.filter(text => text.text === text)
         if (targetTexts.length === 0) {
           alert("「"+text+"」というテキストは存在しません。")
           throw new Error("「"+text+"」というテキストは存在しません。")
