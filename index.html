@@ -131,10 +131,6 @@
         return totalHours
       }
       async function calculateConsumedBuffaInEachDays(dayDoneTaskHours, dayFramesInfo) {
-        if (dayDoneTaskHours.length !== dayFramesInfo.length) {
-          alert('dayDoneTaskHoursとdayFramesInfoの長さが異なっています。dayDoneTaskHours:' + dayDoneTaskHours.length + ', dayFramesInfo:' + dayFramesInfo)
-          return
-        }
         let dayBuffaList = []
         for (let i=0; i<dayDoneTaskHours.length; i++) {
           if (dayDoneTaskHours[i].frame.title !== dayFramesInfo[i].frame.title) {
