@@ -30,7 +30,7 @@
                   totalHourInADay += hour
                 }
                 console.log(totalHourInADay)
-                miro.board.widgets.create({type: "sticker", text: `${frame.title}<br>${totalHourInADay}h`, left: frame.left, top: frame.top})
+                miro.board.widgets.create({type: "sticker", text: `${frame.title}<br>${totalHourInADay}h`, x: frame.x, y: frame.y})
               }
               // console.log(targetChildrenId)
               // const targetStickers =
