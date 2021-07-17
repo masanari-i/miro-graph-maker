@@ -94,7 +94,7 @@
             console.log(targetSticker)
             if (targetSticker) haveTargetTag = targetSticker.tags.some(tag => tag.title === "開発時間")
             if (haveTargetTag) {
-              hour = Number(targetSticker.plaintext.replace("h", ""))
+              hour = Number(targetSticker.plainText.replace("h", ""))
               break
             }
           }
