@@ -18,7 +18,7 @@
         for (const frame of targetFrames) {
           let totalHourInADay = 0
           const developHoursStickerIds = stickers.filter(sticker => sticker.tags.some(tag => tag.title === "開発時間")).map(sticker => sticker.id)
-          if (!compareTwoIdArray(frame.childrenIds, developHoursStickerIds)) return
+          if (!compareTwoIdArray(frame.childrenIds, developHoursStickerIds)) break
           for (const id of frame.childrenIds) {
             const filteredSticker = stickers.filter((sticker) => sticker.tags.some((tag) => tag.title.includes("予定：")))
             const targetSticker = filteredSticker.find((sticker) => sticker.id === id)
