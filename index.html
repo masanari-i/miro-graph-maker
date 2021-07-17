@@ -42,6 +42,8 @@
         })
         const latestDay = getLatestDay()
         const latestIndex = totalHoursList.findIndex((item) => item.frame.title === latestDay)
+        console.log(latestDay)
+        console.log(latestIndex)
         totalHoursList = totalHoursList.slice(0, latestIndex+1)
         return totalHoursList
       }
@@ -145,6 +147,8 @@
         }
         const latestDay = getLatestDay()
         const latestIndex = dayBuffaList.findIndex((item) => item.frame.title === latestDay)
+        console.log(latestDay)
+        console.log(latestIndex)
         dayBuffaList = dayBuffaList.slice(0, latestIndex+1)
         return dayBuffaList
       }
