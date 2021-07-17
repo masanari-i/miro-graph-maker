@@ -12,6 +12,7 @@
       }
       async function createSticker(text, frame) {
         const autoMakingTag = miro.board.tags.get({title: "自動生成"})
+        console.log(autoMakingTag)
         if (autoMakingTag.length === 0) {
           alert("「自動生成」というタグがこのボードにありません。作ってください。")
           throw new Error("「自動生成」というタグがこのボードにありません。作ってください。")
