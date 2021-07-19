@@ -10,12 +10,12 @@
       function round(number) {
         return Math.round(number * 10) / 10
       }
-      async function getTextWidget(text) {
-        const textWidgets = await miro.board.widgets.get({type: "TEXT"})
+      async function getShapeWidget(text) {
+        const textWidgets = await miro.board.widgets.get({type: "SHAPE"})
         const targetTexts = textWidgets.filter(textWidget => textWidget.plainText === text)
         if (targetTexts.length === 0) {
-          alert("「"+text+"」というテキストは存在しません。")
-          throw new Error("「"+text+"」というテキストは存在しません。")
+          alert("「"+text+"」という枠は存在しません。")
+          throw new Error("「"+text+"」という枠は存在しません。")
         }
         return targetTexts
       }
@@ -26,16 +26,16 @@
           throw new Error("「自動生成」というタグがこのボードにありません。作ってください。")
         }
         const childrenIds = frame.childrenIds
-        const targetTexts = (await getTextWidget(word)).filter(textWidget => childrenIds.includes(textWidget.id))
+        const targetTexts = (await getShapeWidget(word)).filter(textWidget => childrenIds.includes(textWidget.id))
         if (targetTexts.length === 0) {
-          alert("フレーム「"+frame.title+"」上に「"+word+"」というテキストが存在しません。")
-          throw new Error("フレーム「"+frame.title+"」上に「"+word+"」というテキストが存在しません。")
+          alert("フレーム「"+frame.title+"」上に「"+word+"」という枠が存在しません。")
+          throw new Error("フレーム「"+frame.title+"」上に「"+word+"」という枠が存在しません。")
         }
         if (targetTexts.length > 1) {
-          alert("フレーム「"+frame.title+"」上に「"+word+"」というテキストが複数存在します。")
-          throw new Error("フレーム「"+frame.title+"」上に「"+word+"」というテキストが複数存在します。")
+          alert("フレーム「"+frame.title+"」上に「"+word+"」という枠が複数存在します。")
+          throw new Error("フレーム「"+frame.title+"」上に「"+word+"」という枠が複数存在します。")
         }
-        const createdSticker = await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y})
+        const createdSticker = await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: 20})
         autoMakingTag[0].widgetIds.push(createdSticker[0].id)
         await miro.board.tags.update({id: autoMakingTag[0].id, widgetIds: autoMakingTag[0].widgetIds})
       }
@@ -82,7 +82,7 @@
             const hour = targetSticker ? Number(targetSticker.tags.find((tag) => tag.title.includes("予定：")).title.split("：")[1].replace("h", "")) : 0
             totalHourInADay += hour
           }
-          await createSticker(`${frame.title}<br>消化タスク<br>${round(totalHourInADay)}h`, frame, "消化タスク")
+          await createSticker(`${frame.title}<br>消化タスク<br>${round(totalHourInADay)}h`, frame, "消化タスク 合計時間")
           totalHoursList.push({frame, hour: totalHourInADay})
           if (frame.title === latestDay) break
         }
@@ -121,7 +121,7 @@
             alert("該当PBIの名前のタイトルがついたフレームが複数存在します。PBI名：" + PBIName)
             throw new Error("該当PBIの名前のタイトルがついたフレームが複数存在します。PBI名：" + PBIName)
           }
-          await createSticker(`${PBIName}<br>合計<br>${round(totalHours)}h`, targetFrame[0], "合計タスク")
+          await createSticker(`${PBIName}<br>合計<br>${round(totalHours)}h`, targetFrame[0], "タスク 合計時間")
           totalHoursList.push({name: PBIName, hour: totalHours})
         }
         return totalHoursList
@@ -129,7 +129,7 @@
       async function calculateAllTaskHoursInAllBacklogs(hoursInBacklogs) {
         const totalHours = hoursInBacklogs.reduce((accum, info) => accum + info.hour, 0)
         const targetFrame = await getSprintInformationFrame()
-        await createSticker(`合計タスク時間<br>${round(totalHours)}h`, targetFrame, "全体タスク")
+        await createSticker(`合計タスク時間<br>${round(totalHours)}h`, targetFrame, "全タスク 合計時間")
         return totalHours
       }
       async function getHoursPreparedForDevelopmentInEachDays() {
@@ -173,7 +173,7 @@
       async function calculateAllDevelopmentHours(dayFramesInfo) {
         const targetFrame = await getSprintInformationFrame()
         const totalHours = dayFramesInfo.reduce((accum, frameInfo) => accum + frameInfo.hour, 0)
-        await createSticker(`開発時間<br>${totalHours}h`, targetFrame, "開発合計時間")
+        await createSticker(`開発時間<br>${totalHours}h`, targetFrame, "開発合計 持ち時間")
         return totalHours
       }
       async function calculateConsumedBuffaInEachDays(dayDoneTaskHours, dayFramesInfo) {
@@ -185,13 +185,13 @@
           }
           const hour = round(dayFramesInfo[i].hour - dayDoneTaskHours[i].hour)
           dayBuffaList.push({frame: dayDoneTaskHours[i].frame, hour})
-          await createSticker(`バッファ消化<br>${hour}h`, dayDoneTaskHours[i].frame, "消費バッファ")
+          await createSticker(`バッファ消化<br>${hour}h`, dayDoneTaskHours[i].frame, "消費バッファ 合計時間")
         }
       }
       async function calculateTotalBuffaHours(totalHoursInBacklogs, totalDevelopHours) {
         const targetFrame = await getSprintInformationFrame()
         const totalBuffa = round(totalDevelopHours - totalHoursInBacklogs)
-        await createSticker(`バッファ<br>合計時間<br>${totalBuffa}h`, targetFrame, "バッファ")
+        await createSticker(`バッファ<br>合計時間<br>${totalBuffa}h`, targetFrame, "バッファ 合計時間")
         return totalBuffa
       }
       async function deleteAutoCreatedStickers() {
