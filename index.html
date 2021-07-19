@@ -37,7 +37,7 @@
         }
         // 199.0はStickerのデフォルトのサイズ
         const expectedStickerWidth = targetTexts[0].bounds.width / 199.0
-        const createdSticker = await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 0}})
+        const createdSticker = await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 15}})
         autoMakingTag[0].widgetIds.push(createdSticker[0].id)
         await miro.board.tags.update({id: autoMakingTag[0].id, widgetIds: autoMakingTag[0].widgetIds})
       }
