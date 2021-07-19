@@ -37,7 +37,22 @@
         }
         // 199.0はStickerのデフォルトのサイズ
         const expectedStickerWidth = targetTexts[0].bounds.width / 199.0
-        const createdSticker = await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 15}})
+        const createdSticker = await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 0}})
+        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 1}})
+        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 2}})
+        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 3}})
+        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 4}})
+        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 5}})
+        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 6}})
+        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 7}})
+        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 8}})
+        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 9}})
+        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 10}})
+        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 11}})
+        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 12}})
+        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 13}})
+        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 14}})
+        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 15}})
         autoMakingTag[0].widgetIds.push(createdSticker[0].id)
         await miro.board.tags.update({id: autoMakingTag[0].id, widgetIds: autoMakingTag[0].widgetIds})
       }
