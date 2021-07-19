@@ -38,32 +38,17 @@
         // 199.0はStickerのデフォルトのサイズ
         const expectedStickerWidth = targetTexts[0].bounds.width / 199.0
         const createdSticker = await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 0}})
-        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 1}})
-        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 2}})
-        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 3}})
-        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 4}})
-        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 5}})
-        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 6}})
-        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 7}})
-        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 8}})
-        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 9}})
-        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 10}})
-        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 11}})
-        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 12}})
-        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 13}})
-        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 14}})
-        await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 15}})
         autoMakingTag[0].widgetIds.push(createdSticker[0].id)
         await miro.board.tags.update({id: autoMakingTag[0].id, widgetIds: autoMakingTag[0].widgetIds})
       }
-      async function getSprintInformationFrame() {
-        const targetFrame = (await miro.board.widgets.get({type: "FRAME"})).filter(frame => frame.title === "sprint information")
+      async function getTargetFrame(frameTitle) {
+        const targetFrame = (await miro.board.widgets.get({type: "FRAME"})).filter(frame => frame.title === frameTitle)
         if (targetFrame.length === 0) {
-          alert("sprint informationというタイトルがついたフレームが存在しません。")
-          throw new Error("sprint informationというタイトルがついたフレームが存在しません。")
+          alert("「"+targetFrame+"」というタイトルがついたフレームが存在しません。")
+          throw new Error("「"+targetFrame+"」というタイトルがついたフレームが存在しません。")
         } else if (targetFrame.length > 1) {
-          alert("sprint informationというタイトルがついたフレームが複数存在します。")
-          throw new Error("sprint informationというタイトルがついたフレームが複数存在します。")
+          alert("「"+targetFrame+"」というタイトルがついたフレームが複数存在します。")
+          throw new Error("「"+targetFrame+"」というタイトルがついたフレームが複数存在します。")
         }
         return targetFrame[0]
       }
@@ -130,22 +115,15 @@
           const totalHours = targetTaskStickers.reduce((accum, sticker) => {
             return accum + Number(sticker.tags.find(tag => tag.title.includes("予定：")).title.split("：")[1].replace("h", ""))
           }, 0)
-          const targetFrame = (await miro.board.widgets.get({type: "FRAME"})).filter(frame => frame.title === PBIName)
-          if (targetFrame.length === 0) {
-            alert("該当PBIの名前のタイトルがついたフレームが存在しません。PBI名：" + PBIName)
-            throw new Error("該当PBIの名前のタイトルがついたフレームが存在しません。PBI名：" + PBIName)
-          } else if (targetFrame.length > 1) {
-            alert("該当PBIの名前のタイトルがついたフレームが複数存在します。PBI名：" + PBIName)
-            throw new Error("該当PBIの名前のタイトルがついたフレームが複数存在します。PBI名：" + PBIName)
-          }
-          await createSticker(`${PBIName}<br>合計<br>${round(totalHours)}h`, targetFrame[0], "タスク 合計時間")
+          const targetFrame = await getTargetFrame(PBIName)
+          await createSticker(`${PBIName}<br>合計<br>${round(totalHours)}h`, targetFrame, "タスク 合計時間")
           totalHoursList.push({name: PBIName, hour: totalHours})
         }
         return totalHoursList
       }
       async function calculateAllTaskHoursInAllBacklogs(hoursInBacklogs) {
         const totalHours = hoursInBacklogs.reduce((accum, info) => accum + info.hour, 0)
-        const targetFrame = await getSprintInformationFrame()
+        const targetFrame = await getTargetFrame("sprint information")
         await createSticker(`合計タスク時間<br>${round(totalHours)}h`, targetFrame, "全タスク 合計時間")
         return totalHours
       }
@@ -188,7 +166,7 @@
         return targetDayFramesInfo
       }
       async function calculateAllDevelopmentHours(dayFramesInfo) {
-        const targetFrame = await getSprintInformationFrame()
+        const targetFrame = await getTargetFrame("sprint information")
         const totalHours = dayFramesInfo.reduce((accum, frameInfo) => accum + frameInfo.hour, 0)
         await createSticker(`開発時間<br>${totalHours}h`, targetFrame, "開発合計 持ち時間")
         return totalHours
@@ -206,7 +184,7 @@
         }
       }
       async function calculateTotalBuffaHours(totalHoursInBacklogs, totalDevelopHours) {
-        const targetFrame = await getSprintInformationFrame()
+        const targetFrame = await getTargetFrame("sprint information")
         const totalBuffa = round(totalDevelopHours - totalHoursInBacklogs)
         await createSticker(`バッファ<br>合計時間<br>${totalBuffa}h`, targetFrame, "バッファ 合計時間")
         return totalBuffa
@@ -215,6 +193,22 @@
         const autoCreatedStickerIds = (await miro.board.widgets.get({type: "STICKER"})).filter(sticker => sticker.tags.some(tag => tag.title === "自動生成")).map(sticker => sticker.id)
         await miro.board.widgets.deleteById(autoCreatedStickerIds)
       }
+      async function drawBaseLineOfGraph() {
+        const targetFrame = await getTargetFrame("スプリントバーンアップチャート")
+        const {left, right, top, bottom} = targetFrame.bounds
+        const lineLeft = left + 50
+        const lineRight = right - 50
+        const lineTop = top + 50
+        const lineBottom = bottom - 50
+        const [horizon, vertical] = await miro.board.widgets.create([
+          {type: "LINE", startPosition: {x: lineLeft, y:lineBottom}, endPosition: {x: lineRight, y: lineBottom}},
+          {type: "LINE", startPosition: {x: lineLeft, y:lineBottom}, endPosition: {x: lineLeft, y: lineTop}}
+        ])
+        return {horizon, vertical}
+      }
+      // async function drawTheRestBuffaGraph(totalBuffaHours, dayConsumedBuffa) {
+      //   drawAPoint(totalBuffaHours)
+      // }
       miro.initialize({
         extensionPoints: {
           bottomBar: {
@@ -237,6 +231,10 @@
               const totalDevelopHours = await calculateAllDevelopmentHours(dayFramesInfo)
               console.log("====以下、全日のバッファの合計の演算====")
               const totalBuffaHours = await calculateTotalBuffaHours(totalHoursInBacklogs, totalDevelopHours)
+              console.log("====グラフの軸描画====")
+              const leftTopAndRightBottomPoint = await drawBaseLineOfGraph()
+              // console.log("====残バッファ描画====")
+              // await drawTheRestBuffaGraph(totalBuffaHours, dayConsumedBuffa)
             }
           }
         }
