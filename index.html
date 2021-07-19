@@ -35,8 +35,8 @@
           alert("フレーム「"+frame.title+"」上に「"+word+"」という枠が複数存在します。")
           throw new Error("フレーム「"+frame.title+"」上に「"+word+"」という枠が複数存在します。")
         }
-        console.log(targetTexts[0].bounds.width)
-        const createdSticker = await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: 1})
+        const expectedStickerWidth = targetTexts[0] / 199
+        const createdSticker = await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth})
         console.log(createdSticker[0].bounds.width)
         autoMakingTag[0].widgetIds.push(createdSticker[0].id)
         await miro.board.tags.update({id: autoMakingTag[0].id, widgetIds: autoMakingTag[0].widgetIds})
