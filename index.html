@@ -284,7 +284,7 @@
               console.log("====以下、全日のバッファの合計の演算====")
               const totalBuffaHours = await calculateTotalBuffaHours(totalHoursInBacklogs, totalDevelopHours)
               console.log("====グラフの描画====")
-              await drawGraphs(totalBuffaHours, dayConsumedBuffa, dayFramesInfo.length, dayDoneTaskHours, totalHoursInBacklogs)
+              await drawGraphs(totalBuffaHours, dayConsumedBuffa.map(buffa => buffa.hour), dayFramesInfo.length, dayDoneTaskHours, totalHoursInBacklogs)
             }
           }
         }
