@@ -244,6 +244,7 @@
           const point = await drawAPoint(hour, baseLines, index, dayNumber, maxPoints)
           pointsInTheGraph.push(point)
         }
+        console.log(pointsInTheGraph)
       }
       async function drawGraphs(totalBuffaHours, dayConsumedBuffa, dayNumber, dayDoneTaskHours, totalHoursInBacklogs) {
         console.log("====グラフの軸描画====")
