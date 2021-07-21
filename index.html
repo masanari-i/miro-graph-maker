@@ -257,9 +257,8 @@
         const pointsOfTheRestBuffa = getPointsOfTheRestBuffa(totalBuffaHours, dayConsumedBuffa, dayNumber)
         const pointsOfDayDoneTask = getPointsOfDayDoneTask(dayDoneTaskHours, dayNumber)
         const pointsOfIdealDoneTask = getPointsOfIdealDoneTask(totalHoursInBacklogs, dayNumber)
-        const maxPoints = pointsOfIdealDoneTask.slice(-1)[0]
         console.log("====残バッファグラフの描画====")
-        await drawGraphOfTheRestBuffa(pointsOfTheRestBuffa, dayNumber, maxPoints, baseLines)
+        await drawGraphOfTheRestBuffa(pointsOfTheRestBuffa, dayNumber, totalHoursInBacklogs, baseLines)
       }
       miro.initialize({
         extensionPoints: {
@@ -284,7 +283,7 @@
               console.log("====以下、全日のバッファの合計の演算====")
               const totalBuffaHours = await calculateTotalBuffaHours(totalHoursInBacklogs, totalDevelopHours)
               console.log("====グラフの描画====")
-              await drawGraphs(totalBuffaHours, dayConsumedBuffa.map(buffa => buffa.hour), dayFramesInfo.length, dayDoneTaskHours, totalHoursInBacklogs)
+              await drawGraphs(totalBuffaHours, dayConsumedBuffa.map(buffa => buffa.hour), dayFramesInfo.length, dayDoneTaskHours.map(info => info.hour), totalHoursInBacklogs)
             }
           }
         }
