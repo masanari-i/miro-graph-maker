@@ -43,7 +43,7 @@
         autoMakingTag[0].widgetIds.push(createdSticker[0].id)
         await miro.board.tags.update({id: autoMakingTag[0].id, widgetIds: autoMakingTag[0].widgetIds})
       }
-      async function drawAPoint(hour, baseLines, index, dayNumber, maxPoint, color) {
+      async function drawAPoint(hour, baseLines, index, dayNumber, valueRange, color) {
         const horizontalLineLength = baseLines.horizon.endPosition.x - baseLines.horizon.startPosition.x - 50
         const x = baseLines.horizon.startPosition.x + ((horizontalLineLength / dayNumber) * index)
         const verticalLineLength = baseLines.vertical.startPosition.y - baseLines.vertical.endPosition.y - 50
@@ -250,10 +250,10 @@
         }
         return cumulativeHoursOfIdealDoneTask
       }
-      async function drawAGraph(points, maxPoints, baseLines, color) {
+      async function drawAGraph(points, valueRange, baseLines, color) {
         const pointsInTheGraph = []
         for (const [index, hour] of points.entries()) {
-          const point = await drawAPoint(hour, baseLines, index, points.length-1, maxPoints, color)
+          const point = await drawAPoint(hour, baseLines, index, points.length-1, valueRange, color)
           pointsInTheGraph.push(point)
         }
         for (let i=0; i<points.length-1; i++) {
@@ -269,11 +269,11 @@
         const {minHour, maxHour} = getMinMaxHour(pointsOfTheRestBuffa.concat(pointsOfDayDoneTask).concat(pointsOfIdealDoneTask))
         const baseLines = await drawBaseLineOfGraph(minHour, maxHour)
         console.log("====残バッファグラフの描画====")
-        await drawAGraph(pointsOfTheRestBuffa, maxHour, baseLines, "#f4a460")
+        await drawAGraph(pointsOfTheRestBuffa, maxHour-minHour, baseLines, "#f4a460")
         console.log("====消化タスクグラフの描画====")
-        await drawAGraph(pointsOfDayDoneTask, maxHour, baseLines, "#4169e1")
+        await drawAGraph(pointsOfDayDoneTask, maxHour-minHour, baseLines, "#4169e1")
         console.log("====理想線の描画====")
-        await drawAGraph(pointsOfIdealDoneTask, maxHour, baseLines, "#3cb371")
+        await drawAGraph(pointsOfIdealDoneTask, maxHour-minHour, baseLines, "#3cb371")
       }
       miro.initialize({
         extensionPoints: {
