@@ -10,6 +10,9 @@
       function round(number) {
         return Math.round(number * 10) / 10
       }
+      function getMinMaxHour(numberArray) {
+        return {minHour: Math.min(...numberArray), maxHour: Math.max(...numberArray)}
+      }
       async function getShapeWidget(text) {
         const textWidgets = await miro.board.widgets.get({type: "SHAPE"})
         const targetTexts = textWidgets.filter(textWidget => textWidget.plainText === text)
@@ -203,16 +206,20 @@
         const ids = (await getTargetFrame("スプリントバーンアップチャート")).childrenIds
         await miro.board.widgets.deleteById(ids)
       }
-      async function drawBaseLineOfGraph() {
+      async function drawBaseLineOfGraph(min, max) {
         const targetFrame = await getTargetFrame("スプリントバーンアップチャート")
         const {left, right, top, bottom} = targetFrame.bounds
-        const lineLeft = left + 50
-        const lineRight = right - 50
-        const lineTop = top + 50
-        const lineBottom = bottom - 50
+        const leftPoint = left + 100
+        const rightPoint = right - 100
+        const topPoint = top + 100
+        const bottomPoint = bottom - 100
+        const verticalLength = bottomPoint - topPoint
+        const zeroHeightRate = (0 - min) / (max - min)
+        const zeroHeightPoint = bottomPoint - (verticalLength * zeroHeightRate)
+
         const [horizon, vertical] = await miro.board.widgets.create([
-          {type: "LINE", startPosition: {x: lineLeft, y:lineBottom}, endPosition: {x: lineRight, y: lineBottom}},
-          {type: "LINE", startPosition: {x: lineLeft, y:lineBottom}, endPosition: {x: lineLeft, y: lineTop}}
+          {type: "LINE", startPosition: {x: leftPoint, y: zeroHeightPoint}, endPosition: {x: rightPoint, y: zeroHeightPoint}},
+          {type: "LINE", startPosition: {x: leftPoint, y: bottomPoint}, endPosition: {x: leftPoint, y: topPoint}}
         ])
         return {horizon, vertical}
       }
@@ -254,18 +261,19 @@
         }
       }
       async function drawGraphs(totalBuffaHours, dayConsumedBuffa, dayNumber, dayDoneTaskHours, totalHoursInBacklogs) {
-        console.log("====グラフの軸描画====")
-        const baseLines = await drawBaseLineOfGraph()
         console.log("====3つのグラフの点の算出====")
         const pointsOfTheRestBuffa = getPointsOfTheRestBuffa(totalBuffaHours, dayConsumedBuffa, dayNumber)
         const pointsOfDayDoneTask = getPointsOfDayDoneTask(dayDoneTaskHours, dayNumber)
         const pointsOfIdealDoneTask = getPointsOfIdealDoneTask(totalHoursInBacklogs, dayNumber)
+        console.log("====グラフの軸描画====")
+        const {minHour, maxHour} = getMinMaxHour(pointsOfTheRestBuffa.concat(pointsOfDayDoneTask).concat(pointsOfIdealDoneTask))
+        const baseLines = await drawBaseLineOfGraph(minHour, maxHour)
         console.log("====残バッファグラフの描画====")
-        await drawAGraph(pointsOfTheRestBuffa, totalHoursInBacklogs, baseLines, "#f4a460")
+        await drawAGraph(pointsOfTheRestBuffa, maxHour, baseLines, "#f4a460")
         console.log("====消化タスクグラフの描画====")
-        await drawAGraph(pointsOfDayDoneTask, totalHoursInBacklogs, baseLines, "#4169e1")
+        await drawAGraph(pointsOfDayDoneTask, maxHour, baseLines, "#4169e1")
         console.log("====理想線の描画====")
-        await drawAGraph(pointsOfIdealDoneTask, totalHoursInBacklogs, baseLines, "#3cb371")
+        await drawAGraph(pointsOfIdealDoneTask, maxHour, baseLines, "#3cb371")
       }
       miro.initialize({
         extensionPoints: {
