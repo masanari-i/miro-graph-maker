@@ -240,7 +240,7 @@
       }
       async function drawGraphOfTheRestBuffa(pointsOfTheRestBuffa, dayNumber, maxPoints, baseLines) {
         const pointsInTheGraph = []
-        for (const [hour, index] of pointsOfTheRestBuffa) {
+        for (const [index, hour] of pointsOfTheRestBuffa.entries()) {
           const point = await drawAPoint(hour, baseLines, index, dayNumber, maxPoints)
           pointsInTheGraph.push(point)
         }
