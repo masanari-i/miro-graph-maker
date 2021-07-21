@@ -212,10 +212,10 @@
         const sizeRate = targetFrame.height / 1800.0
         console.log(sizeRate)
         const {left, right, top, bottom} = targetFrame.bounds
-        const leftPoint = (left + 100) * sizeRate
-        const rightPoint = (right - 100) * sizeRate
-        const topPoint = (top + 100) * sizeRate
-        const bottomPoint = (bottom - 100) * sizeRate
+        const leftPoint = left + (100 * sizeRate)
+        const rightPoint = right - (100 * sizeRate)
+        const topPoint = top + (100 * sizeRate)
+        const bottomPoint = bottom - (100 * sizeRate)
         const verticalLength = bottomPoint - topPoint
         const zeroHeightRate = (0 - min) / (max - min)
         const zeroHeightPoint = bottomPoint - (verticalLength * zeroHeightRate)
