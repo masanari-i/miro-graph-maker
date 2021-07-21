@@ -145,7 +145,7 @@
         const developTimeStickers  = (await miro.board.widgets.get({type: "STICKER"})).filter(sticker => sticker.tags.some(tag => tag.title === "開発時間"))
         for (const frame of dayFrames) {
           if (compareTwoIdArray(frame.childrenIds, developTimeStickers.map(sticker => sticker.id))) {
-            const hour = Number(developTimeStickers.find(sticker => frame.childrenIds.includes(sticker)).plainText.replace("h", ""))
+            const hour = Number(developTimeStickers.find(sticker => frame.childrenIds.includes(sticker.id)).plainText.replace("h", ""))
             targetDayFramesInfo.push({frame, hour})
           }
         }
