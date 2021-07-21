@@ -50,8 +50,8 @@
           style: {shapeType: 4, borderColor: 'transparent', backgroundColor: '#f4a460'},
           x,
           y,
-          height: 20,
-          width: 20
+          height: 30,
+          width: 30
         }))[0]
       }
       async function drawALine(startPoint, endPoint) {
@@ -246,7 +246,7 @@
       async function drawGraphOfTheRestBuffa(pointsOfTheRestBuffa, maxPoints, baseLines) {
         const pointsInTheGraph = []
         for (const [index, hour] of pointsOfTheRestBuffa.entries()) {
-          const point = await drawAPoint(hour, baseLines, index, pointsOfTheRestBuffa.length, maxPoints)
+          const point = await drawAPoint(hour, baseLines, index, pointsOfTheRestBuffa.length-1, maxPoints)
           pointsInTheGraph.push(point)
         }
         for (let i=0; i<pointsOfTheRestBuffa.length-1; i++) {
