@@ -44,7 +44,7 @@
         const horizontalLineLength = baseLines.horizon.endPosition.x - baseLines.horizon.startPosition.x
         const x = baseLines.horizon.startPosition.x + ((horizontalLineLength / dayNumber) * index)
         const verticalLineLength = baseLines.vertical.startPosition.y - baseLines.vertical.endPosition.y
-        const y = baseLines.vertical.startPosition - ((verticalLineLength / maxPoint) * hour)
+        const y = baseLines.vertical.startPosition.y - ((verticalLineLength / maxPoint) * hour)
         console.log(baseLines)
         console.log(x)
         console.log(y)
