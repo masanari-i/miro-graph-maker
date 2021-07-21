@@ -40,24 +40,22 @@
         autoMakingTag[0].widgetIds.push(createdSticker[0].id)
         await miro.board.tags.update({id: autoMakingTag[0].id, widgetIds: autoMakingTag[0].widgetIds})
       }
-      async  function drawAPoint(hour, baseLines, index, dayNumber, maxPoint) {
+      async function drawAPoint(hour, baseLines, index, dayNumber, maxPoint) {
         const horizontalLineLength = baseLines.horizon.endPosition.x - baseLines.horizon.startPosition.x
         const x = baseLines.horizon.startPosition.x + ((horizontalLineLength / dayNumber) * index)
         const verticalLineLength = baseLines.vertical.startPosition.y - baseLines.vertical.endPosition.y
         const y = baseLines.vertical.startPosition.y - ((verticalLineLength / maxPoint) * hour)
-        console.log(baseLines)
-        console.log(maxPoint)
-        console.log(hour)
-        console.log(x)
-        console.log(y)
         return (await miro.board.widgets.create({
           type: "SHAPE",
           style: {shapeType: 4, borderColor: 'transparent', backgroundColor: '#f4a460'},
           x,
           y,
-          height: 10,
-          width: 10
+          height: 20,
+          width: 20
         }))[0]
+      }
+      async function drawALine(startPoint, endPoint) {
+        await miro.board.widgets.create({type: "LINE", style: {lineColor: "#f4a460", lineThickness: 8}, startWidgetId: startPoint.id, endWidgetId: endPoint.id})
       }
       async function getTargetFrame(frameTitle) {
         const targetFrame = (await miro.board.widgets.get({type: "FRAME"})).filter(frame => frame.title === frameTitle)
@@ -245,14 +243,15 @@
         }
         return cumulativeHoursOfIdealDoneTask
       }
-      async function drawGraphOfTheRestBuffa(pointsOfTheRestBuffa, dayNumber, maxPoints, baseLines) {
+      async function drawGraphOfTheRestBuffa(pointsOfTheRestBuffa, maxPoints, baseLines) {
         const pointsInTheGraph = []
-        console.log(pointsOfTheRestBuffa)
         for (const [index, hour] of pointsOfTheRestBuffa.entries()) {
-          const point = await drawAPoint(hour, baseLines, index, dayNumber, maxPoints)
+          const point = await drawAPoint(hour, baseLines, index, pointsOfTheRestBuffa.length, maxPoints)
           pointsInTheGraph.push(point)
         }
-        console.log(pointsInTheGraph)
+        for (let i=0; i<pointsOfTheRestBuffa.length-1; i++) {
+          await drawALine(pointsInTheGraph[i], pointsInTheGraph[i+1])
+        }
       }
       async function drawGraphs(totalBuffaHours, dayConsumedBuffa, dayNumber, dayDoneTaskHours, totalHoursInBacklogs) {
         console.log("====グラフの軸描画====")
@@ -262,7 +261,7 @@
         const pointsOfDayDoneTask = getPointsOfDayDoneTask(dayDoneTaskHours, dayNumber)
         const pointsOfIdealDoneTask = getPointsOfIdealDoneTask(totalHoursInBacklogs, dayNumber)
         console.log("====残バッファグラフの描画====")
-        await drawGraphOfTheRestBuffa(pointsOfTheRestBuffa, dayNumber, totalHoursInBacklogs, baseLines)
+        await drawGraphOfTheRestBuffa(pointsOfTheRestBuffa, totalHoursInBacklogs, baseLines)
       }
       miro.initialize({
         extensionPoints: {
