@@ -47,7 +47,7 @@
         const horizontalLineLength = baseLines.horizon.endPosition.x - baseLines.horizon.startPosition.x - 50
         const x = baseLines.horizon.startPosition.x + ((horizontalLineLength / dayNumber) * index)
         const verticalLineLength = baseLines.vertical.startPosition.y - baseLines.vertical.endPosition.y - 50
-        const y = baseLines.horizon.startPosition.y - ((verticalLineLength / maxPoint) * hour)
+        const y = baseLines.horizon.startPosition.y - ((verticalLineLength / valueRange) * hour)
         return (await miro.board.widgets.create({
           type: "SHAPE",
           style: {shapeType: 4, borderColor: 'transparent', backgroundColor: color},
