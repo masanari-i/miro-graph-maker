@@ -186,6 +186,7 @@
           dayBuffaList.push({frame: dayDoneTaskHours[i].frame, hour})
           await createSticker(`バッファ消化<br>${hour}h`, dayDoneTaskHours[i].frame, "消費バッファ 合計時間")
         }
+        return dayBuffaList
       }
       async function calculateTotalBuffaHours(totalHoursInBacklogs, totalDevelopHours) {
         const targetFrame = await getTargetFrame("sprint information")
