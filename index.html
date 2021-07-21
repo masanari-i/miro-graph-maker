@@ -209,7 +209,7 @@
       async function drawBaseLineOfGraph(min, max) {
         const targetFrame = await getTargetFrame("スプリントバーンアップチャート")
         console.log(targetFrame.height)
-        const sizeRate = targetFrame / 1800.0
+        const sizeRate = targetFrame.height / 1800.0
         console.log(sizeRate)
         const {left, right, top, bottom} = targetFrame.bounds
         const leftPoint = (left + 100) * sizeRate
