@@ -44,9 +44,9 @@
         await miro.board.tags.update({id: autoMakingTag[0].id, widgetIds: autoMakingTag[0].widgetIds})
       }
       async function drawAPoint(hour, baseLines, index, dayNumber, valueRange, sizeRate, color) {
-        const horizontalLineLength = baseLines.horizon.endPosition.x - baseLines.horizon.startPosition.x - 50
+        const horizontalLineLength = baseLines.horizon.endPosition.x - baseLines.horizon.startPosition.x - (50 * sizeRate)
         const x = baseLines.horizon.startPosition.x + ((horizontalLineLength / dayNumber) * index)
-        const verticalLineLength = baseLines.vertical.startPosition.y - baseLines.vertical.endPosition.y - 50
+        const verticalLineLength = baseLines.vertical.startPosition.y - baseLines.vertical.endPosition.y - (100 * sizeRate)
         const y = baseLines.horizon.startPosition.y - ((verticalLineLength / valueRange) * hour)
         return (await miro.board.widgets.create({
           type: "SHAPE",
@@ -210,6 +210,7 @@
         const targetFrame = await getTargetFrame("スプリントバーンアップチャート")
         console.log(targetFrame.height)
         const sizeRate = targetFrame / 1800.0
+        console.log(sizeRate)
         const {left, right, top, bottom} = targetFrame.bounds
         const leftPoint = (left + 100) * sizeRate
         const rightPoint = (right - 100) * sizeRate
