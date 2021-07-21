@@ -45,14 +45,17 @@
         const x = baseLines.horizon.startPosition.x + ((horizontalLineLength / dayNumber) * index)
         const verticalLineLength = baseLines.vertical.startPosition.y - baseLines.vertical.endPosition.y
         const y = baseLines.vertical.startPosition - ((verticalLineLength / maxPoint) * hour)
-        return await miro.board.widgets.create({
+        console.log(baseLines)
+        console.log(x)
+        console.log(y)
+        return (await miro.board.widgets.create({
           type: "SHAPE",
           style: {shapeType: "CIRCLE", borderColor: 'transparent', backgroundColor: '#f4a460'},
           x,
           y,
           height: 10,
           width: 10
-        })
+        }))[0]
       }
       async function getTargetFrame(frameTitle) {
         const targetFrame = (await miro.board.widgets.get({type: "FRAME"})).filter(frame => frame.title === frameTitle)
