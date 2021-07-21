@@ -216,9 +216,9 @@
         const rightPoint = right - (100 * sizeRate)
         const topPoint = top + (100 * sizeRate)
         const bottomPoint = bottom - (100 * sizeRate)
-        const verticalLength = bottomPoint - topPoint
+        const verticalLength = (bottomPoint - topPoint) * sizeRate
         const zeroHeightRate = (0 - min) / (max - min)
-        const zeroHeightPoint = bottomPoint - (verticalLength * zeroHeightRate)
+        const zeroHeightPoint = bottomPoint - (50 * sizeRate) - (verticalLength * zeroHeightRate)
 
         const [horizon, vertical] = await miro.board.widgets.create([
           {type: "LINE", startPosition: {x: leftPoint, y: zeroHeightPoint}, endPosition: {x: rightPoint, y: zeroHeightPoint}},
