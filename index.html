@@ -46,6 +46,8 @@
         const verticalLineLength = baseLines.vertical.startPosition.y - baseLines.vertical.endPosition.y
         const y = baseLines.vertical.startPosition.y - ((verticalLineLength / maxPoint) * hour)
         console.log(baseLines)
+        console.log(maxPoint)
+        console.log(hour)
         console.log(x)
         console.log(y)
         return (await miro.board.widgets.create({
