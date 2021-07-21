@@ -53,8 +53,8 @@
           style: {shapeType: "CIRCLE", borderColor: 'transparent', backgroundColor: '#f4a460'},
           x,
           y,
-          height: 10,
-          width: 10
+          height: 100,
+          width: 100
         }))[0]
       }
       async function getTargetFrame(frameTitle) {
@@ -243,6 +243,7 @@
       }
       async function drawGraphOfTheRestBuffa(pointsOfTheRestBuffa, dayNumber, maxPoints, baseLines) {
         const pointsInTheGraph = []
+        console.log(pointsOfTheRestBuffa)
         for (const [index, hour] of pointsOfTheRestBuffa.entries()) {
           const point = await drawAPoint(hour, baseLines, index, dayNumber, maxPoints)
           pointsInTheGraph.push(point)
