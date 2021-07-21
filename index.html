@@ -35,11 +35,24 @@
           alert("フレーム「"+frame.title+"」上に「"+word+"」という枠が複数存在します。")
           throw new Error("フレーム「"+frame.title+"」上に「"+word+"」という枠が複数存在します。")
         }
-        // 199.0はStickerのデフォルトのサイズ
-        const expectedStickerWidth = targetTexts[0].bounds.width / 199.0
+        const expectedStickerWidth = targetTexts[0].bounds.width / 199.0 // 199.0はStickerのデフォルトのサイズ
         const createdSticker = await miro.board.widgets.create({type: "STICKER", text, x: targetTexts[0].x, y: targetTexts[0].y, scale: expectedStickerWidth, style: {stickerBackgroundColor: 0}})
         autoMakingTag[0].widgetIds.push(createdSticker[0].id)
         await miro.board.tags.update({id: autoMakingTag[0].id, widgetIds: autoMakingTag[0].widgetIds})
+      }
+      async  function drawAPoint(hour, baseLines, index, dayNumber, maxPoint) {
+        const horizontalLineLength = baseLines.horizon.endPosition.x - baseLines.horizon.startPosition.x
+        const x = baseLines.horizon.startPosition.x + ((horizontalLineLength / dayNumber) * index)
+        const verticalLineLength = baseLines.vertical.startPosition.y - baseLines.vertical.endPosition.y
+        const y = baseLines.vertical.startPosition - ((verticalLineLength / maxPoint) * hour)
+        return await miro.board.widgets.create({
+          type: "SHAPE",
+          style: {shapeType: "CIRCLE", borderColor: 'transparent', backgroundColor: '#f4a460'},
+          x,
+          y,
+          height: 10,
+          width: 10
+        })
       }
       async function getTargetFrame(frameTitle) {
         const targetFrame = (await miro.board.widgets.get({type: "FRAME"})).filter(frame => frame.title === frameTitle)
@@ -129,20 +142,10 @@
       }
       async function getHoursPreparedForDevelopmentInEachDays() {
         const dayFrames = (await miro.board.widgets.get({type: "FRAME"})).filter(frame => frame.title.includes("Day"))
-        const stickers  = await miro.board.widgets.get({type: "STICKER"})
-        let targetDayFramesInfo = []
+        const developTimeStickers  = (await miro.board.widgets.get({type: "STICKER"})).filter(sticker => sticker.tags.some(tag => tag.title === "開発時間"))
         for (const frame of dayFrames) {
-          let hour
-          let haveTargetTag = false
-          for (const id of frame.childrenIds) {
-            const targetSticker = stickers.find(sticker => sticker.id === id)
-            if (targetSticker) haveTargetTag = targetSticker.tags.some(tag => tag.title === "開発時間")
-            if (haveTargetTag) {
-              hour = Number(targetSticker.plainText.replace("h", ""))
-              break
-            }
-          }
-          if (haveTargetTag) {
+          if (compareTwoIdArray(frame.childrenIds, developTimeStickers.map(sticker => sticker.id))) {
+            const hour = Number(developTimeStickers.find(sticker => frame.childrenIds.includes(sticker)).plainText.replace("h", ""))
             targetDayFramesInfo.push({frame, hour})
           }
         }
@@ -206,9 +209,51 @@
         ])
         return {horizon, vertical}
       }
-      // async function drawTheRestBuffaGraph(totalBuffaHours, dayConsumedBuffa) {
-      //   drawAPoint(totalBuffaHours)
-      // }
+      function getPointsOfTheRestBuffa(totalBuffaHours, dayConsumedBuffa, dayNumber) {
+        const theRestBuffaInEachDays = [totalBuffaHours]
+        for (let i=1; i<=dayNumber; i++) {
+          if (i<=dayConsumedBuffa.length) {
+            theRestBuffaInEachDays.push(theRestBuffaInEachDays[i-1] - dayConsumedBuffa[i-1])
+            continue
+          }
+          theRestBuffaInEachDays.push(theRestBuffaInEachDays[i-1])
+        }
+        return theRestBuffaInEachDays
+      }
+      function getPointsOfDayDoneTask(dayDoneTaskHours, dayNumber) {
+        const cumulativeHoursOfDayDoneTask = [0]
+        for (let i=1; i<=dayNumber; i++) {
+          const cumulativeHoursInThisDay = dayDoneTaskHours[i-1] ? cumulativeHoursOfDayDoneTask[i-1]+dayDoneTaskHours[i-1]: cumulativeHoursOfDayDoneTask[i-1]
+          cumulativeHoursOfDayDoneTask.push(cumulativeHoursInThisDay)
+        }
+        return cumulativeHoursOfDayDoneTask
+      }
+      function getPointsOfIdealDoneTask(totalHoursInBacklogs, dayNumber) {
+        const dayDoneIdealHour = totalHoursInBacklogs / dayNumber
+        const cumulativeHoursOfIdealDoneTask = [0]
+        for (let i=1; i<=dayNumber; i++) {
+          cumulativeHoursOfIdealDoneTask.push(cumulativeHoursOfIdealDoneTask[i-1] + dayDoneIdealHour)
+        }
+        return cumulativeHoursOfIdealDoneTask
+      }
+      async function drawGraphOfTheRestBuffa(pointsOfTheRestBuffa, dayNumber, maxPoints, baseLines) {
+        const pointsInTheGraph = []
+        for (const [hour, index] of pointsOfTheRestBuffa) {
+          const point = await drawAPoint(hour, baseLines, index, dayNumber, maxPoints)
+          pointsInTheGraph.push(point)
+        }
+      }
+      async function drawGraphs(totalBuffaHours, dayConsumedBuffa, dayNumber, dayDoneTaskHours, totalHoursInBacklogs) {
+        console.log("====グラフの軸描画====")
+        const baseLines = await drawBaseLineOfGraph()
+        console.log("====3つのグラフの点の算出====")
+        const pointsOfTheRestBuffa = getPointsOfTheRestBuffa(totalBuffaHours, dayConsumedBuffa, dayNumber)
+        const pointsOfDayDoneTask = getPointsOfDayDoneTask(dayDoneTaskHours, dayNumber)
+        const pointsOfIdealDoneTask = getPointsOfIdealDoneTask(totalHoursInBacklogs, dayNumber)
+        const maxPoints = pointsOfIdealDoneTask.slice(-1)[0]
+        console.log("====残バッファグラフの描画====")
+        await drawGraphOfTheRestBuffa(pointsOfTheRestBuffa, dayNumber, maxPoints, baseLines)
+      }
       miro.initialize({
         extensionPoints: {
           bottomBar: {
@@ -231,10 +276,8 @@
               const totalDevelopHours = await calculateAllDevelopmentHours(dayFramesInfo)
               console.log("====以下、全日のバッファの合計の演算====")
               const totalBuffaHours = await calculateTotalBuffaHours(totalHoursInBacklogs, totalDevelopHours)
-              console.log("====グラフの軸描画====")
-              const leftTopAndRightBottomPoint = await drawBaseLineOfGraph()
-              // console.log("====残バッファ描画====")
-              // await drawTheRestBuffaGraph(totalBuffaHours, dayConsumedBuffa)
+              console.log("====グラフの描画====")
+              await drawGraphs(totalBuffaHours, dayConsumedBuffa, dayFramesInfo.length, dayDoneTaskHours, totalHoursInBacklogs)
             }
           }
         }
