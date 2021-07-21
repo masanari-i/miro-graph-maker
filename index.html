@@ -55,7 +55,7 @@
         }))[0]
       }
       async function drawALine(startPoint, endPoint) {
-        await miro.board.widgets.create({type: "LINE", style: {lineColor: "#f4a460", lineThickness: 8}, startWidgetId: startPoint.id, endWidgetId: endPoint.id})
+        await miro.board.widgets.create({type: "LINE", style: {lineColor: "#f4a460", lineThickness: 8}, startPosition: {x: startPoint.x, y: startPoint.y}, endPosition: {x: endPoint.x, y: endPoint.y}})
       }
       async function getTargetFrame(frameTitle) {
         const targetFrame = (await miro.board.widgets.get({type: "FRAME"})).filter(frame => frame.title === frameTitle)
