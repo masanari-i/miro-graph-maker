@@ -43,21 +43,13 @@
         autoMakingTag[0].widgetIds.push(createdSticker[0].id)
         await miro.board.tags.update({id: autoMakingTag[0].id, widgetIds: autoMakingTag[0].widgetIds})
       }
-      async function drawAPoint(hour, basePoints, index, dayNumber, valueRange, sizeRate, color) {
-        console.log(hour)
-        console.log(valueRange)
-        await miro.board.widgets.create({ type: "SHAPE", style: {shapeType: 4, borderColor: 'transparent', backgroundColor: color}, x: basePoints.left, y: basePoints.bottom, height: 30 * sizeRate, width: 30 * sizeRate})
-        await miro.board.widgets.create({type: "TEXT", scale: 2 * sizeRate, text: "innerBottom", x: basePoints.left + 50 * sizeRate, y: basePoints.bottom - 50 * sizeRate})
-        await miro.board.widgets.create({ type: "SHAPE", style: {shapeType: 4, borderColor: 'transparent', backgroundColor: color}, x: basePoints.left, y: basePoints.top, height: 30 * sizeRate, width: 30 * sizeRate})
-        await miro.board.widgets.create({type: "TEXT", scale: 2 * sizeRate, text: "innerTop", x: basePoints.left + 50 * sizeRate, y: basePoints.top - 50 * sizeRate})
-        await miro.board.widgets.create({ type: "SHAPE", style: {shapeType: 4, borderColor: 'transparent', backgroundColor: color}, x: basePoints.left, y: basePoints.zero, height: 30 * sizeRate, width: 30 * sizeRate})
-        await miro.board.widgets.create({type: "TEXT", scale: 2 * sizeRate, text: "zero", x: basePoints.left + 50 * sizeRate, y: basePoints.zero - 50 * sizeRate})
-        await miro.board.widgets.create({ type: "SHAPE", style: {shapeType: 4, borderColor: 'transparent', backgroundColor: color}, x: basePoints.right, y: basePoints.zero, height: 30 * sizeRate, width: 30 * sizeRate})
-        await miro.board.widgets.create({type: "TEXT", scale: 2 * sizeRate, text: "innerRight", x: basePoints.right + 50 * sizeRate, y: basePoints.zero - 50 * sizeRate})
+      async function drawAPoint(hour, basePoints, index, dayNumber, maxHour, minHour, sizeRate, color) {
+
+        const valueRange = maxHour - minHour
         const horizontalLineLength = basePoints.right - basePoints.left
         const x = basePoints.left + ((horizontalLineLength / dayNumber) * index)
         const verticalLineLength = basePoints.bottom - basePoints.top
-        const y = basePoints.zero - ((verticalLineLength / valueRange) * hour)
+        const y = basePoints.bottom - ((verticalLineLength / valueRange) * (hour - minHour))
         await miro.board.widgets.create({type: "TEXT", scale: 3 * sizeRate, text: round(hour).toString(), x: x + 50 * sizeRate, y: y - 50 * sizeRate})
         return (await miro.board.widgets.create({
           type: "SHAPE",
@@ -236,7 +228,7 @@
           {type: "LINE", startPosition: {x: leftPoint, y: zeroHeightPoint}, endPosition: {x: rightPoint, y: zeroHeightPoint}},
           {type: "LINE", startPosition: {x: leftPoint, y: bottomPoint}, endPosition: {x: leftPoint, y: topPoint}}
         ])
-        return {basePoints: {top: innerTopPoint, bottom: innerBottomPoint, left: leftPoint, right: innerRightPoint, zero: zeroHeightPoint}, sizeRate }
+        return {basePoints: {top: innerTopPoint, bottom: innerBottomPoint, left: leftPoint, right: innerRightPoint}, sizeRate }
       }
       function getPointsOfTheRestBuffa(totalBuffaHours, dayConsumedBuffa, dayNumber) {
         const theRestBuffaInEachDays = [totalBuffaHours]
@@ -265,10 +257,10 @@
         }
         return cumulativeHoursOfIdealDoneTask
       }
-      async function drawAGraph(points, valueRange, basePoints, sizeRate, color) {
+      async function drawAGraph(points, maxHour, minHour, basePoints, sizeRate, color) {
         const pointsInTheGraph = []
         for (const [index, hour] of points.entries()) {
-          const point = await drawAPoint(hour, basePoints, index, points.length-1, valueRange, sizeRate, color)
+          const point = await drawAPoint(hour, basePoints, index, points.length-1, maxHour, minHour, sizeRate, color)
           pointsInTheGraph.push(point)
         }
         for (let i=0; i<points.length-1; i++) {
@@ -284,11 +276,11 @@
         const {minHour, maxHour} = getMinMaxHour(pointsOfTheRestBuffa.concat(pointsOfDayDoneTask).concat(pointsOfIdealDoneTask))
         const {basePoints, sizeRate} = await drawBaseLineOfGraph(minHour, maxHour)
         console.log("====残バッファグラフの描画====")
-        await drawAGraph(pointsOfTheRestBuffa, maxHour-minHour, basePoints, sizeRate, "#f4a460")
+        await drawAGraph(pointsOfTheRestBuffa, maxHour, minHour, basePoints, sizeRate, "#f4a460")
         console.log("====消化タスクグラフの描画====")
-        await drawAGraph(pointsOfDayDoneTask, maxHour-minHour, basePoints, sizeRate, "#4169e1")
+        await drawAGraph(pointsOfDayDoneTask, maxHour, minHour, basePoints, sizeRate, "#4169e1")
         console.log("====理想線の描画====")
-        await drawAGraph(pointsOfIdealDoneTask, maxHour-minHour, basePoints, sizeRate, "#3cb371")
+        await drawAGraph(pointsOfIdealDoneTask, maxHour, minHour, basePoints, sizeRate, "#3cb371")
       }
       miro.initialize({
         extensionPoints: {
