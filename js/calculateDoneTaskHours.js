@@ -1,5 +1,6 @@
 import {compareTwoIdArray, round} from "./util";
 import {createSticker} from "./createSticker";
+import {getLatestDay} from "./getWidget";
 
 export async function calculateDoneTaskHoursInADay() {
   const frames = await miro.board.widgets.get({type: 'FRAME'})

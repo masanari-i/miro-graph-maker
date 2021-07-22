@@ -22,7 +22,7 @@ export async function getShapeWidget(text) {
   return targetTexts
 }
 
-async function getLatestDay() {
+export async function getLatestDay() {
   const stickerIds = (await miro.board.widgets.get({type: "STICKER"})).filter(sticker => sticker.tags.some(tag => tag.title === "finish")).map(sticker => sticker.id)
   if (stickerIds.length === 0) {
     alert("finishのタグがついた付箋が存在しません。")

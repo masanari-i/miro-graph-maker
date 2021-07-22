@@ -1,5 +1,5 @@
 import {compareTwoIdArray} from "./util";
-import {getFrameWidget} from "./getWidget";
+import {getFrameWidget, getLatestDay} from "./getWidget";
 import {createSticker} from "./createSticker";
 
 export async function getDevelopingHoursInADay() {
