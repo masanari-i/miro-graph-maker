@@ -230,7 +230,7 @@
           {type: "LINE", startPosition: {x: leftPoint, y: bottomPoint}, endPosition: {x: leftPoint, y: topPoint}},
           {type: "TEXT", text: "START", x: leftPoint, y:zeroHeightPoint + 50 * sizeRate, scale: 3 * sizeRate, width: 50 * sizeRate, style: {textAlign: "c"}}
         ])
-        return {basePoints: {top: innerTopPoint, bottom: innerBottomPoint, left: leftPoint, right: innerRightPoint, originalTop: topPoint, originalBottom: bottomPoint, zero: zeroHeightPoint}, sizeRate }
+        return {basePoints: {top: innerTopPoint, bottom: innerBottomPoint, left: leftPoint, right: innerRightPoint, originalTop: topPoint, originalBottom: bottomPoint, originalRight: rightPoint, zero: zeroHeightPoint}, sizeRate }
       }
       function getPointsOfTheRestBuffa(totalBuffaHours, dayConsumedBuffa, dayNumber) {
         const theRestBuffaInEachDays = [totalBuffaHours]
@@ -284,12 +284,11 @@
         const scaleWidgets = []
         const yScaleMax = Math.floor(maxHour / 10)
         const yScaleMin = (Math.floor(minHour / 10)) + (Math.floor(minHour) % 10 === 0 ? 0 : 1)
-        console.log(yScaleMax)
-        console.log(yScaleMin)
         const yScaleUnit = (basePoints.bottom - basePoints.top) / (maxHour - minHour)
         for (let i=yScaleMin; i<=yScaleMax; i++) {
           if (i === 0) continue
           scaleWidgets.push({type: "SHAPE", x: basePoints.left, y: basePoints.zero - i * 10 * yScaleUnit, width: 20 * sizeRate, height: 20 * sizeRate, style: {shapeType: 4, backgroundColor: "#000000", borderColor: "transparent"}})
+          scaleWidgets.push({type: "LINE", startPosition: {x: basePoints.left, y: basePoints.zero - i * 10 * yScaleUnit}, endPosition: {x: basePoints.originalRight, y: basePoints.zero - i * 10 * yScaleUnit}, width: 20 * sizeRate, height: 20 * sizeRate, style: {lineColor: "#c0c0c0", lineThickness: 3 * sizeRate, lineStyle: 1}})
           scaleWidgets.push({type: "TEXT", x: basePoints.left - 30 * sizeRate, y: basePoints.zero - i * 10 * yScaleUnit, text: (i * 10).toString(), scale: 3 * sizeRate})
         }
         points.forEach((point, index) => {
@@ -297,6 +296,7 @@
           scaleWidgets.push({type: "SHAPE", x: point.x, y: basePoints.zero, width: 20 * sizeRate, height: 20 * sizeRate, style: {shapeType: 4, backgroundColor: "#000000", borderColor: "transparent"}})
           scaleWidgets.push({type: "TEXT", x: point.x, y: basePoints.zero + 50 * sizeRate, text: "Day"+index, scale: 3 * sizeRate})
         })
+
         await miro.board.widgets.create(scaleWidgets)
       }
       async function drawGraphs(totalBuffaHours, dayConsumedBuffa, dayNumber, dayDoneTaskHours, totalHoursInBacklogs) {
