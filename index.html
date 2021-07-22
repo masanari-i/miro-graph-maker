@@ -46,6 +46,14 @@
       async function drawAPoint(hour, basePoints, index, dayNumber, valueRange, sizeRate, color) {
         console.log(hour)
         console.log(valueRange)
+        await miro.board.widgets.create({ type: "SHAPE", style: {shapeType: 4, borderColor: 'transparent', backgroundColor: color}, x: basePoints.left, y: basePoints.bottom, height: 30 * sizeRate, width: 30 * sizeRate})
+        await miro.board.widgets.create({type: "TEXT", scale: 2 * sizeRate, text: "innerBottom", x: basePoints.left + 50 * sizeRate, y: basePoints.bottom - 50 * sizeRate})
+        await miro.board.widgets.create({ type: "SHAPE", style: {shapeType: 4, borderColor: 'transparent', backgroundColor: color}, x: basePoints.left, y: basePoints.top, height: 30 * sizeRate, width: 30 * sizeRate})
+        await miro.board.widgets.create({type: "TEXT", scale: 2 * sizeRate, text: "innerTop", x: basePoints.left + 50 * sizeRate, y: basePoints.top - 50 * sizeRate})
+        await miro.board.widgets.create({ type: "SHAPE", style: {shapeType: 4, borderColor: 'transparent', backgroundColor: color}, x: basePoints.left, y: basePoints.zero, height: 30 * sizeRate, width: 30 * sizeRate})
+        await miro.board.widgets.create({type: "TEXT", scale: 2 * sizeRate, text: "zero", x: basePoints.left + 50 * sizeRate, y: basePoints.zero - 50 * sizeRate})
+        await miro.board.widgets.create({ type: "SHAPE", style: {shapeType: 4, borderColor: 'transparent', backgroundColor: color}, x: basePoints.right, y: basePoints.zero, height: 30 * sizeRate, width: 30 * sizeRate})
+        await miro.board.widgets.create({type: "TEXT", scale: 2 * sizeRate, text: "innerRight", x: basePoints.right + 50 * sizeRate, y: basePoints.zero - 50 * sizeRate})
         const horizontalLineLength = basePoints.right - basePoints.left
         const x = basePoints.left + ((horizontalLineLength / dayNumber) * index)
         const verticalLineLength = basePoints.bottom - basePoints.top
