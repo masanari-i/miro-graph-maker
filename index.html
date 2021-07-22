@@ -229,7 +229,7 @@
           {type: "LINE", startPosition: {x: leftPoint, y: zeroHeightPoint}, endPosition: {x: rightPoint, y: zeroHeightPoint}},
           {type: "LINE", startPosition: {x: leftPoint, y: bottomPoint}, endPosition: {x: leftPoint, y: topPoint}}
         ])
-        return {basePoints: {top: innerTopPoint, bottom: innerBottomPoint, left: leftPoint, right: innerRightPoint}, sizeRate }
+        return {basePoints: {top: innerTopPoint, bottom: innerBottomPoint, left: leftPoint, right: innerRightPoint, originalTop: top, originalBottom: bottom}, sizeRate }
       }
       function getPointsOfTheRestBuffa(totalBuffaHours, dayConsumedBuffa, dayNumber) {
         const theRestBuffaInEachDays = [totalBuffaHours]
@@ -267,6 +267,16 @@
         for (let i=0; i<points.length-1; i++) {
           await drawALine(pointsInTheGraph[i], pointsInTheGraph[i+1], sizeRate, color)
         }
+        return pointsInTheGraph
+      }
+      async function drawTodayIndicator(basePoints, today, points, sizeRate) {
+        const x = points[today].x
+        const y = (basePoints.originalTop + basePoints.originalBottom) / 2.0
+        const height = basePoints.originalBottom - basePoints.originalTop
+        const width = 200 * sizeRate
+        const color = "#ff1493"
+        const style = { backgroundColor: 'transparent', borderThickness: 8 * sizeRate, borderColor: color}
+        await miro.board.widgets.create({type: "SHAPE", x, y, height, width, style})
       }
       async function drawGraphs(totalBuffaHours, dayConsumedBuffa, dayNumber, dayDoneTaskHours, totalHoursInBacklogs) {
         console.log("====3つのグラフの点の算出====")
@@ -277,11 +287,13 @@
         const {minHour, maxHour} = getMinMaxHour(pointsOfTheRestBuffa.concat(pointsOfDayDoneTask).concat(pointsOfIdealDoneTask))
         const {basePoints, sizeRate} = await drawBaseLineOfGraph(minHour, maxHour)
         console.log("====残バッファグラフの描画====")
-        await drawAGraph(pointsOfTheRestBuffa, maxHour, minHour, basePoints, sizeRate, "#f4a460")
+        const points = await drawAGraph(pointsOfTheRestBuffa, maxHour, minHour, basePoints, sizeRate, "#f4a460")
         console.log("====消化タスクグラフの描画====")
         await drawAGraph(pointsOfDayDoneTask, maxHour, minHour, basePoints, sizeRate, "#4169e1")
         console.log("====理想線の描画====")
         await drawAGraph(pointsOfIdealDoneTask, maxHour, minHour, basePoints, sizeRate, "#3cb371")
+        console.log("====本日の枠の描画====")
+        await drawTodayIndicator(basePoints, dayConsumedBuffa.length, points, sizeRate)
       }
       miro.initialize({
         extensionPoints: {
