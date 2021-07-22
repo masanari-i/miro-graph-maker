@@ -229,7 +229,7 @@
           {type: "LINE", startPosition: {x: leftPoint, y: zeroHeightPoint}, endPosition: {x: rightPoint, y: zeroHeightPoint}},
           {type: "LINE", startPosition: {x: leftPoint, y: bottomPoint}, endPosition: {x: leftPoint, y: topPoint}}
         ])
-        return {basePoints: {top: innerTopPoint, bottom: innerBottomPoint, left: leftPoint, right: innerRightPoint, originalTop: top, originalBottom: bottom}, sizeRate }
+        return {basePoints: {top: innerTopPoint, bottom: innerBottomPoint, left: leftPoint, right: innerRightPoint, originalTop: topPoint, originalBottom: bottomPoint}, sizeRate }
       }
       function getPointsOfTheRestBuffa(totalBuffaHours, dayConsumedBuffa, dayNumber) {
         const theRestBuffaInEachDays = [totalBuffaHours]
@@ -275,7 +275,7 @@
         const height = basePoints.originalBottom - basePoints.originalTop
         const width = 200 * sizeRate
         const color = "#ff1493"
-        const style = { backgroundColor: 'transparent', borderThickness: 8 * sizeRate, borderColor: color}
+        const style = { backgroundColor: 'transparent', borderWidth: 8 * sizeRate, borderColor: color}
         await miro.board.widgets.create({type: "SHAPE", x, y, height, width, style})
       }
       async function drawGraphs(totalBuffaHours, dayConsumedBuffa, dayNumber, dayDoneTaskHours, totalHoursInBacklogs) {
