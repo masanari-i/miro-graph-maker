@@ -282,8 +282,8 @@
       async function drawScale(maxHour, minHour, sizeRate, points, basePoints) {
 
         const scaleWidgets = []
-        const yScaleMax = Math.floor(maxHour) / 10
-        const yScaleMin = (Math.floor(minHour) / 10) + (Math.floor(minHour) % 10 === 0 ? 0 : 1)
+        const yScaleMax = Math.floor(maxHour / 10)
+        const yScaleMin = (Math.floor(minHour / 10)) + (Math.floor(minHour) % 10 === 0 ? 0 : 1)
         console.log(yScaleMax)
         console.log(yScaleMin)
         const yScaleUnit = (basePoints.bottom - basePoints.top) / (maxHour - minHour)
