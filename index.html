@@ -44,9 +44,9 @@
         await miro.board.tags.update({id: autoMakingTag[0].id, widgetIds: autoMakingTag[0].widgetIds})
       }
       async function drawAPoint(hour, basePoints, index, dayNumber, valueRange, sizeRate, color) {
-        const horizontalLineLength = basePoints.right - basePoints.left - (50 * sizeRate)
+        const horizontalLineLength = basePoints.right - basePoints.left
         const x = basePoints.left + ((horizontalLineLength / dayNumber) * index)
-        const verticalLineLength = basePoints.bottom - basePoints.top - (100 * sizeRate)
+        const verticalLineLength = basePoints.bottom - basePoints.top
         const y = basePoints.bottom - ((verticalLineLength / valueRange) * hour)
         return (await miro.board.widgets.create({
           type: "SHAPE",
