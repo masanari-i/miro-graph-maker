@@ -285,12 +285,10 @@
         const yScaleMax = Math.floor(maxHour) / 10
         const yScaleMin = (Math.floor(minHour) / 10) + (Math.floor(minHour) % 10 === 0 ? 0 : 1)
         const yScaleUnit = (basePoints.bottom - basePoints.top) / (maxHour - minHour)
-        console.log(yScaleMax)
-        console.log(yScaleMin)
         for (let i=yScaleMin; i<=yScaleMax; i++) {
           if (i === 0) continue
           scaleWidgets.push({type: "SHAPE", x: basePoints.left, y: basePoints.zero - i * 10 * yScaleUnit, width: 20 * sizeRate, height: 20 * sizeRate, style: {shapeType: 4, backgroundColor: "#000000", borderColor: "transparent"}})
-          scaleWidgets.push({type: "TEXT", x: basePoints.left - 50 * sizeRate, y: basePoints.zero - i * 10 * yScaleUnit, text: (i * 10).toString(), scale: 3 * sizeRate})
+          scaleWidgets.push({type: "TEXT", x: basePoints.left - 30 * sizeRate, y: basePoints.zero - i * 10 * yScaleUnit, text: (i * 10).toString(), scale: 3 * sizeRate})
         }
         points.forEach((point, index) => {
           if (index === 0) return
