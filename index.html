@@ -208,9 +208,7 @@
       }
       async function drawBaseLineOfGraph(min, max) {
         const targetFrame = await getTargetFrame("スプリントバーンアップチャート")
-        console.log(targetFrame.height)
         const sizeRate = targetFrame.height / 1800.0
-        console.log(sizeRate)
         const {left, right, top, bottom} = targetFrame.bounds
         const leftPoint = left + (100 * sizeRate)
         const rightPoint = right - (100 * sizeRate)
@@ -222,12 +220,6 @@
         const verticalLength = (innerBottomPoint - innerTopPoint) * sizeRate
         const zeroHeightRate = (0 - min) / (max - min)
         const zeroHeightPoint = innerBottomPoint - (verticalLength * zeroHeightRate)
-        console.log("top: ", top)
-        console.log("topPoint: ", topPoint)
-        console.log("bottom: ", bottom)
-        console.log("bottomPoint: ", bottomPoint)
-        console.log("zeroHeightRate: ", zeroHeightRate)
-        console.log("zeroHeightPoint: ", zeroHeightPoint)
 
         await miro.board.widgets.create([
           {type: "LINE", startPosition: {x: leftPoint, y: zeroHeightPoint}, endPosition: {x: rightPoint, y: zeroHeightPoint}},
@@ -311,6 +303,7 @@
               const totalBuffaHours = await calculateTotalBuffaHours(totalHoursInBacklogs, totalDevelopHours)
               console.log("====グラフの描画====")
               await drawGraphs(totalBuffaHours, dayConsumedBuffa.map(buffa => buffa.hour), dayFramesInfo.length, dayDoneTaskHours.map(info => info.hour), totalHoursInBacklogs)
+              console.log("====終わり====")
             }
           }
         }
