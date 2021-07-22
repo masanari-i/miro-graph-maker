@@ -228,7 +228,7 @@
         await miro.board.widgets.create([
           {type: "LINE", startPosition: {x: leftPoint, y: zeroHeightPoint}, endPosition: {x: rightPoint, y: zeroHeightPoint}},
           {type: "LINE", startPosition: {x: leftPoint, y: bottomPoint}, endPosition: {x: leftPoint, y: topPoint}},
-          {type: "TEXT", text: "START", x: leftPoint, y:zeroHeightPoint + 50 * sizeRate, scale: 3 * sizeRate, width: 2 * sizeRate, style: {textColor: "#808080"}}
+          {type: "TEXT", text: "START", x: leftPoint, y:zeroHeightPoint + 50 * sizeRate, scale: 3 * sizeRate, width: 5 * sizeRate, style: {textColor: "#808080"}}
         ])
         return {basePoints: {top: innerTopPoint, bottom: innerBottomPoint, left: leftPoint, right: innerRightPoint, originalTop: topPoint, originalBottom: bottomPoint, zero: zeroHeightPoint}, sizeRate }
       }
@@ -284,7 +284,7 @@
         points.forEach((point, index) => {
           if (index === 0) return
           scaleWidgets.push({type: "SHAPE", x: point.x, y: basePoints.zero, width: 20 * sizeRate, height: 20 * sizeRate, style: {shapeType: 4, backgroundColor: "#808080", borderColor: "transparent"}})
-          scaleWidgets.push({type: "TEXT", x: point.x, y: basePoints.zero + 50 * sizeRate, text: "Day"+index, scale: 3 * sizeRate, width: 2 * sizeRate, style: {textColor: "#808080"}})
+          scaleWidgets.push({type: "TEXT", x: point.x, y: basePoints.zero + 50 * sizeRate, text: "Day"+index, scale: 3 * sizeRate, style: {textColor: "#808080"}})
         })
         await miro.board.widgets.create(scaleWidgets)
       }
