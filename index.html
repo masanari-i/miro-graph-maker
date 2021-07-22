@@ -222,6 +222,7 @@
         const innerRightPoint = rightPoint - (100 * sizeRate)
         const verticalLength = (innerBottomPoint - innerTopPoint) * sizeRate
         const zeroHeightRate = (0 - min) / (max - min)
+        console.log(zeroHeightRate)
         const zeroHeightPoint = innerBottomPoint - (verticalLength * zeroHeightRate)
 
         await miro.board.widgets.create([
