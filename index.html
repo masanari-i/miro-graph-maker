@@ -240,7 +240,7 @@
         return theRestBuffaInEachDays
       }
       function getPointsOfDayDoneTask(dayDoneTaskHours, dayNumber) {
-        const cumulativeHoursOfDayDoneTask = [0]
+        const cumulativeHoursOfDayDoneTask = [0.0]
         for (let i=1; i<=dayNumber; i++) {
           const cumulativeHoursInThisDay = dayDoneTaskHours[i-1] ? cumulativeHoursOfDayDoneTask[i-1]+dayDoneTaskHours[i-1]: cumulativeHoursOfDayDoneTask[i-1]
           cumulativeHoursOfDayDoneTask.push(cumulativeHoursInThisDay)
@@ -249,7 +249,7 @@
       }
       function getPointsOfIdealDoneTask(totalHoursInBacklogs, dayNumber) {
         const dayDoneIdealHour = totalHoursInBacklogs / dayNumber
-        const cumulativeHoursOfIdealDoneTask = [0]
+        const cumulativeHoursOfIdealDoneTask = [0.0]
         for (let i=1; i<=dayNumber; i++) {
           cumulativeHoursOfIdealDoneTask.push(cumulativeHoursOfIdealDoneTask[i-1] + dayDoneIdealHour)
         }
