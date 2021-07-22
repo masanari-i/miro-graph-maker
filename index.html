@@ -281,8 +281,8 @@
       async function drawScale(maxHour, minHour, sizeRate, points, basePoints) {
         const scaleWidgets = []
         points.forEach((point, index) => {
-          scaleWidgets.push({type: "SHAPE", x: point.x, y: basePoints.zero, width: 20 * sizeRate, height: 20 * sizeRate, style: {shapeType: 4, backgroundColor: "#c0c0c0", borderColor: "transparent"}})
-          scaleWidgets.push({type: "TEXT", x: point.x, y: basePoints.zero + 50 * sizeRate, text: index===0 ? "START" : "Day"+index, scale: 3 * sizeRate, style: {textColor: "#c0c0c0"}})
+          scaleWidgets.push({type: "SHAPE", x: point.x, y: basePoints.zero, width: 20 * sizeRate, height: 20 * sizeRate, style: {shapeType: 4, backgroundColor: "#808080", borderColor: "transparent"}})
+          scaleWidgets.push({type: "TEXT", x: point.x, y: basePoints.zero + 50 * sizeRate, text: index===0 ? "START" : "Day"+index, scale: 3 * sizeRate, width: 200 * sizeRate, style: {textColor: "#808080"}})
         })
         await miro.board.widgets.create(scaleWidgets)
       }
