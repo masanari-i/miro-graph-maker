@@ -1,0 +1,23 @@
+{
+  "name": "miro-graph-maker",
+  "version": "1.0.0",
+  "description": "miroでグラフを自動作成するプラグイン",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/masanari-i/miro-graph-maker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/masanari-i/miro-graph-maker/issues"
+  },
+  "homepage": "https://github.com/masanari-i/miro-graph-maker#readme",
+  "devDependencies": {
+    "webpack": "^5.46.0",
+    "webpack-cli": "^4.7.2"
+  }
+}
