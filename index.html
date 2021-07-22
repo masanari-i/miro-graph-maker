@@ -228,7 +228,7 @@
         await miro.board.widgets.create([
           {type: "LINE", startPosition: {x: leftPoint, y: zeroHeightPoint}, endPosition: {x: rightPoint, y: zeroHeightPoint}},
           {type: "LINE", startPosition: {x: leftPoint, y: bottomPoint}, endPosition: {x: leftPoint, y: topPoint}},
-          {type: "TEXT", text: "START", x: leftPoint, y:zeroHeightPoint + 50 * sizeRate, scale: 3 * sizeRate, width: 10 * sizeRate, style: {textColor: "#808080"}}
+          {type: "TEXT", text: "START", x: leftPoint, y:zeroHeightPoint + 50 * sizeRate, scale: 3 * sizeRate, width: 50 * sizeRate, style: {textColor: "#808080"}}
         ])
         return {basePoints: {top: innerTopPoint, bottom: innerBottomPoint, left: leftPoint, right: innerRightPoint, originalTop: topPoint, originalBottom: bottomPoint, zero: zeroHeightPoint}, sizeRate }
       }
