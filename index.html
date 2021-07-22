@@ -47,7 +47,7 @@
         const horizontalLineLength = basePoints.right - basePoints.left
         const x = basePoints.left + ((horizontalLineLength / dayNumber) * index)
         const verticalLineLength = basePoints.bottom - basePoints.top
-        const y = basePoints.bottom - ((verticalLineLength / valueRange) * hour)
+        const y = basePoints.zero - ((verticalLineLength / valueRange) * hour)
         return (await miro.board.widgets.create({
           type: "SHAPE",
           style: {shapeType: 4, borderColor: 'transparent', backgroundColor: color},
@@ -233,7 +233,7 @@
           {type: "LINE", startPosition: {x: leftPoint, y: zeroHeightPoint}, endPosition: {x: rightPoint, y: zeroHeightPoint}},
           {type: "LINE", startPosition: {x: leftPoint, y: bottomPoint}, endPosition: {x: leftPoint, y: topPoint}}
         ])
-        return {basePoints: {top: innerTopPoint, bottom: innerBottomPoint, left: leftPoint, right: innerRightPoint}, sizeRate }
+        return {basePoints: {top: innerTopPoint, bottom: innerBottomPoint, left: leftPoint, right: innerRightPoint, zero: zeroHeightPoint}, sizeRate }
       }
       function getPointsOfTheRestBuffa(totalBuffaHours, dayConsumedBuffa, dayNumber) {
         const theRestBuffaInEachDays = [totalBuffaHours]
