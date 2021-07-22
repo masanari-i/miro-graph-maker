@@ -48,6 +48,7 @@
         const x = basePoints.left + ((horizontalLineLength / dayNumber) * index)
         const verticalLineLength = basePoints.bottom - basePoints.top
         const y = basePoints.zero - ((verticalLineLength / valueRange) * hour)
+        await miro.board.widgets.create({type: "TEXT", text: hour, x: x + 30 * sizeRate, y: y - 30 * sizeRate})
         return (await miro.board.widgets.create({
           type: "SHAPE",
           style: {shapeType: 4, borderColor: 'transparent', backgroundColor: color},
