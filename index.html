@@ -294,7 +294,7 @@
         points.forEach((point, index) => {
           if (index === 0) return
           scaleWidgets.push({type: "SHAPE", x: point.x, y: basePoints.zero, width: 20 * sizeRate, height: 20 * sizeRate, style: {shapeType: 4, backgroundColor: "#000000", borderColor: "transparent"}})
-          scaleWidgets.push({type: "LINE", startPosition: {x: point.x, y: basePoints.originalBottom}, endPosition: {x: points.x, y: basePoints.originalTop}, style: {lineColor: "#c0c0c0", lineThickness: 3 * sizeRate, lineStyle: 1}})
+          scaleWidgets.push({type: "LINE", startPosition: {x: point.x, y: basePoints.originalBottom}, endPosition: {x: point.x, y: basePoints.originalTop}, style: {lineColor: "#c0c0c0", lineThickness: 3 * sizeRate, lineStyle: 1}})
           scaleWidgets.push({type: "TEXT", x: point.x, y: basePoints.zero + 50 * sizeRate, text: "Day"+index, scale: 3 * sizeRate})
         })
 
