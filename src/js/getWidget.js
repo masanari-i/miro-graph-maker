@@ -1,13 +1,14 @@
-import {compareTwoIdArray} from "./util";
+import {compareTwoIdArray} from "./util.js";
 
 export async function getFrameWidget(frameTitle) {
   const targetFrame = (await miro.board.widgets.get({type: "FRAME"})).filter(frame => frame.title === frameTitle)
   if (targetFrame.length === 0) {
-    alert("「"+targetFrame+"」というタイトルがついたフレームが存在しません。")
-    throw new Error("「"+targetFrame+"」というタイトルがついたフレームが存在しません。")
+    alert("「"+frameTitle+"」というタイトルがついたフレームが存在しません。")
+    throw new Error("「"+frameTitle+"」というタイトルがついたフレームが存在しません。")
   } else if (targetFrame.length > 1) {
-    alert("「"+targetFrame+"」というタイトルがついたフレームが複数存在します。")
-    throw new Error("「"+targetFrame+"」というタイトルがついたフレームが複数存在します。")
+    alert("「"+frameTitle+"」というタイトルがついたフレームが複数存在します。")
+    await miro.board.widgets.get({type: "STICKER"})
+    throw new Error("「"+frameTitle+"」というタイトルがついたフレームが複数存在します。")
   }
   return targetFrame[0]
 }

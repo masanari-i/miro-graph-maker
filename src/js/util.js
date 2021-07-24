@@ -1,4 +1,5 @@
 export function compareTwoIdArray(idArray1, idArray2) {
+  console.log("not mock")
   return idArray1.some(id => idArray2.includes(id))
 }
 export function round(number) {
