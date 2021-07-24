@@ -30,7 +30,7 @@ jobs:
         run: |
           pwd
           ls
-          node js/showPath.js
+          node showPath.js
 
       # Runs a single command using the runners shell
       - name: Install npm packages
