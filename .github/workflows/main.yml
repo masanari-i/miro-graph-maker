@@ -25,6 +25,13 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
+      # pwd
+      - name: show current directory
+        run: pwd
+
+      - name: show children directory
+        run : ls
+
       # Runs a single command using the runners shell
       - name: Install npm packages
         run: npm i
