@@ -27,10 +27,10 @@ jobs:
 
       # pwd
       - name: show current directory
-        run: pwd
-
-      - name: show children directory
-        run : ls
+        run: |
+          pwd
+          ls
+          node js/showPath.js
 
       # Runs a single command using the runners shell
       - name: Install npm packages
