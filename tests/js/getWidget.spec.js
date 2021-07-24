@@ -1,7 +1,6 @@
-import {jest} from '@jest/globals'
-jest.mock('../../src/js/util.js')
+const Util = require('../../src/js/util')
+const {getFrameWidget, getShapeWidget, getLatestDay} = require("../../src/js/getWidget.js")
 
-import {getFrameWidget, getShapeWidget, getLatestDay} from "../../src/js/getWidget.js"
 const getSpy = jest.fn()
 const alertSpy = jest.fn()
 window.miro = {
@@ -12,6 +11,7 @@ window.miro = {
   }
 }
 window.alert = alertSpy
+const compareTwoIdArraySpy = jest.spyOn(Util, "compareTwoIdArray")
 
 describe('getWidget.js', () => {
 
@@ -89,7 +89,7 @@ describe('getWidget.js', () => {
         {id: '5', title: 'dummy1 title', childrenIds: []},
         {id: '6', title: 'dummy2 title', childrenIds: []}
       ])
-      // compareTwoIdArraySpy.mockReturnValue(true)
+      compareTwoIdArraySpy.mockReturnValue(true)
     })
     it('finish付箋が置かれているフレームのタイトルを返す', async () => {
       const result = await getLatestDay()

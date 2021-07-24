@@ -1,6 +1,6 @@
-import {compareTwoIdArray} from "./util.js";
+const {compareTwoIdArray} = require("./util.js")
 
-export async function getFrameWidget(frameTitle) {
+exports.getFrameWidget = async function (frameTitle) {
   const targetFrame = (await miro.board.widgets.get({type: "FRAME"})).filter(frame => frame.title === frameTitle)
   if (targetFrame.length === 0) {
     alert("「"+frameTitle+"」というタイトルがついたフレームが存在しません。")
@@ -13,7 +13,7 @@ export async function getFrameWidget(frameTitle) {
   return targetFrame[0]
 }
 
-export async function getShapeWidget(text) {
+exports.getShapeWidget = async function (text) {
   const textWidgets = await miro.board.widgets.get({type: "SHAPE"})
   const targetTexts = textWidgets.filter(textWidget => textWidget.plainText === text)
   if (targetTexts.length === 0) {
@@ -23,7 +23,7 @@ export async function getShapeWidget(text) {
   return targetTexts
 }
 
-export async function getLatestDay() {
+exports.getLatestDay = async function () {
   const stickerIds = (await miro.board.widgets.get({type: "STICKER"})).filter(sticker => sticker.tags.some(tag => tag.title === "finish")).map(sticker => sticker.id)
   if (stickerIds.length === 0) {
     alert("finishのタグがついた付箋が存在しません。")

@@ -1,8 +1,8 @@
-import {compareTwoIdArray} from "./util";
-import {getFrameWidget, getLatestDay} from "./getWidget";
-import {createSticker} from "./createSticker";
+const {compareTwoIdArray} = require("./util")
+const {getFrameWidget, getLatestDay} = require("./getWidget")
+const {createSticker} = require("./createSticker")
 
-export async function getDevelopingHoursInADay() {
+exports.getDevelopingHoursInADay = async function () {
   const dayFrames = (await miro.board.widgets.get({type: "FRAME"})).filter(frame => frame.title.includes("Day"))
   const developTimeStickers  = (await miro.board.widgets.get({type: "STICKER"})).filter(sticker => sticker.tags.some(tag => tag.title === "開発時間"))
   const targetDayFramesInfo = []
@@ -31,7 +31,7 @@ export async function getDevelopingHoursInADay() {
   }
   return targetDayFramesInfo
 }
-export async function calculateTotalDevelopingHours(dayFramesInfo) {
+exports.calculateTotalDevelopingHours = async function (dayFramesInfo) {
   const targetFrame = await getFrameWidget("sprint information")
   const totalHours = dayFramesInfo.reduce((accum, frameInfo) => accum + frameInfo.hour, 0)
   await createSticker(`開発時間<br>${totalHours}h`, targetFrame, "開発合計 持ち時間")

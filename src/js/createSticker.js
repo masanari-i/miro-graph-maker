@@ -1,6 +1,6 @@
-import {getShapeWidget} from "./getWidget";
+const {getShapeWidget} = require("./getWidget")
 
-export async function createSticker(text, frame, word) {
+exports.createSticker = async function (text, frame, word) {
   const autoMakingTag = await miro.board.tags.get({title: "自動生成"})
   if (autoMakingTag.length === 0) {
     alert("「自動生成」というタグがこのボードにありません。作ってください。")

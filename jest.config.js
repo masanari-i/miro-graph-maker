@@ -1,8 +1,8 @@
-export default {
+exports = {
   // moduleNameMapper: {
   //   '@/(.+)': '<rootDir>/src/$1'
   // },
   silent: false,
-  testEnvironment: "jsdom",
+  // testEnvironment: "jsdom",
   // transformIgnorePatterns: ["<rootDir>/src/js/"]
 }

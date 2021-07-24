@@ -1,8 +1,8 @@
-import {compareTwoIdArray, round} from "./util";
-import {createSticker} from "./createSticker";
-import {getLatestDay} from "./getWidget";
+const {compareTwoIdArray, round} = require("./util")
+const {createSticker} = require("./createSticker")
+const {getLatestDay} = require("./getWidget")
 
-export async function calculateDoneTaskHoursInADay() {
+exports.calculateDoneTaskHoursInADay = async function () {
   const frames = await miro.board.widgets.get({type: 'FRAME'})
   const stickers = await miro.board.widgets.get({type: "STICKER"})
   const targetFrames = frames.filter((frame) => frame.title.includes("Day"))

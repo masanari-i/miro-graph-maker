@@ -1,4 +1,4 @@
-import { compareTwoIdArray, getMinMaxHour, round } from '@/js/util.js'
+const { compareTwoIdArray, getMinMaxHour, round } = require('@/js/util.js')
 
 describe('util.js', () => {
   describe('compareTwoIdArray', () => {

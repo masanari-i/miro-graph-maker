@@ -1,8 +1,8 @@
-import {round} from "./util";
-import {createSticker} from "./createSticker";
-import {getFrameWidget} from "./getWidget";
+const {round} = require("./util")
+const {createSticker} = require("./createSticker")
+const {getFrameWidget} = require("./getWidget")
 
-export async function calculateConsumedBuffaHoursInADay(dayDoneTaskHours, dayFramesInfo) {
+exports.calculateConsumedBuffaHoursInADay = async function (dayDoneTaskHours, dayFramesInfo) {
   let dayBuffaList = []
   for (let i=0; i<dayDoneTaskHours.length; i++) {
     if (dayDoneTaskHours[i].frame.title !== dayFramesInfo[i].frame.title) {
@@ -15,7 +15,7 @@ export async function calculateConsumedBuffaHoursInADay(dayDoneTaskHours, dayFra
   }
   return dayBuffaList
 }
-export async function calculateTotalBuffaHours(totalHoursInBacklogs, totalDevelopHours) {
+exports.calculateTotalBuffaHours = async function (totalHoursInBacklogs, totalDevelopHours) {
   const targetFrame = await getFrameWidget("sprint information")
   const totalBuffa = round(totalDevelopHours - totalHoursInBacklogs)
   await createSticker(`バッファ<br>合計時間<br>${totalBuffa}h`, targetFrame, "バッファ 合計時間")

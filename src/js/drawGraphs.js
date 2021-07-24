@@ -1,7 +1,7 @@
-import { getMinMaxHour, compareTwoIdArray, round} from "./util";
-import { getFrameWidget } from "./getWidget";
+const { getMinMaxHour, round} = require("./util")
+const { getFrameWidget } = require("./getWidget")
 
-export async function drawGraphs(totalBuffaHours, dayConsumedBuffa, dayNumber, dayDoneTaskHours, totalHoursInBacklogs) {
+exports.drawGraphs = async function (totalBuffaHours, dayConsumedBuffa, dayNumber, dayDoneTaskHours, totalHoursInBacklogs) {
   console.log("====3つのグラフの点の算出====")
   const pointsOfTheRestBuffa = getPointsOfTheRestBuffa(totalBuffaHours, dayConsumedBuffa, dayNumber)
   const pointsOfDayDoneTask = getPointsOfDayDoneTask(dayDoneTaskHours, dayNumber)

@@ -1,11 +1,11 @@
-export async function getFrameWidget(frameTitle) {
+exports.getFrameWidget = function (frameTitle) {
   return {id: "getFrameWidget", title: "title", childrenIds: ["id1", "id2", "id3"]}
 }
 
-export async function getShapeWidget(text) {
+exports.getShapeWidget = function (text) {
   return {id: "getShapeWidget", plainText: "plainText"}
 }
 
-export async function getLatestDay() {
+exports.getLatestDay = function () {
   return "getLatestDay"
 }

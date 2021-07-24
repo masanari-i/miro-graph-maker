@@ -1,8 +1,8 @@
-import {getFrameWidget} from "./getWidget";
-import {createSticker} from "./createSticker";
-import {round} from "./util";
+const {getFrameWidget} = require("./getWidget")
+const {createSticker} = require("./createSticker")
+const {round} = require("./util")
 
-export async function calculateTaskHoursInABacklog() {
+exports.calculateTaskHoursInABacklog = async function () {
   const PBIListStickers = (await miro.board.widgets.get({type: "STICKER"})).filter((sticker) => sticker.tags.some((tag) => tag.title === "PBIリスト"))
   if (PBIListStickers.length === 0) {
     alert("PBIリストのタグがついた付箋が存在しません。")
@@ -26,7 +26,7 @@ export async function calculateTaskHoursInABacklog() {
   }
   return totalHoursList
 }
-export async function calculateTotalTaskHours(hoursInBacklogs) {
+exports.calculateTotalTaskHours = async function (hoursInBacklogs) {
   const totalHours = hoursInBacklogs.reduce((accum, info) => accum + info.hour, 0)
   const targetFrame = await getFrameWidget("sprint information")
   await createSticker(`合計タスク時間<br>${round(totalHours)}h`, targetFrame, "全タスク 合計時間")

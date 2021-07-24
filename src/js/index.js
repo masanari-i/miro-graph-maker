@@ -1,9 +1,9 @@
-import {deleteAutoCreatedWidgets} from "./deleteWidgets";
-import {calculateTaskHoursInABacklog, calculateTotalTaskHours} from "./calculateTaskHours";
-import {calculateDoneTaskHoursInADay} from "./calculateDoneTaskHours";
-import {calculateTotalDevelopingHours, getDevelopingHoursInADay} from "./calculateDevelopingHours";
-import {calculateConsumedBuffaHoursInADay, calculateTotalBuffaHours} from "./calculateBuffaHours";
-import {drawGraphs} from "./drawGraphs";
+const {deleteAutoCreatedWidgets} = require("./deleteWidgets")
+const {calculateTaskHoursInABacklog, calculateTotalTaskHours} = require("./calculateTaskHours")
+const {calculateDoneTaskHoursInADay} = require("./calculateDoneTaskHours")
+const {calculateTotalDevelopingHours, getDevelopingHoursInADay} = require("./calculateDevelopingHours")
+const {calculateConsumedBuffaHoursInADay, calculateTotalBuffaHours} = require("./calculateBuffaHours")
+const {drawGraphs} = require("./drawGraphs")
 miro.onReady(() => {
   miro.initialize({
     extensionPoints: {
